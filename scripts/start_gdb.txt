@@ -1,0 +1,11 @@
+set architecture i386:x86-64:intel
+set confirm off
+set disassemble-next-line on
+set disassembly-flavor intel
+set pagination off
+
+target remote localhost:1234
+
+b RedHawk.cs:75
+b OS_OS_Kernel__Initialize
+c

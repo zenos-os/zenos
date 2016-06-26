@@ -1,0 +1,27 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.props))\dir.props" Condition="'$(IsProjectNLibrary)' != 'true'" />
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ILCompiler</RootNamespace>
+    <AssemblyName>ILCompiler.Build.Tasks</AssemblyName>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <OutputPath>$(BaseOutputPath)$(OSPlatformConfig)/tools</OutputPath>
+    <!-- Workaround for https://github.com/dotnet/corert/issues/6306 -->
+    <SkipSigning>true</SkipSigning>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="ComputeManagedAssemblies.cs" />
+  </ItemGroup>
+  <ItemGroup>
+  <PackageReference Include="Microsoft.Build.Framework">
+    <Version>15.3.409</Version>
+  </PackageReference>
+  <PackageReference Include="Microsoft.Build.Utilities.Core">
+    <Version>15.3.409</Version>
+  </PackageReference>
+  <PackageReference Include="System.Reflection.Metadata">
+    <Version>$(SystemReflectionMetadataVersion)</Version>
+  </PackageReference>
+  </ItemGroup>
+  <Import Project="$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), dir.targets))\dir.targets" Condition="'$(IsProjectNLibrary)' != 'true'" />
+</Project>

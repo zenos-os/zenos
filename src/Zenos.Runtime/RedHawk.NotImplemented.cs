@@ -1,0 +1,107 @@
+﻿using System.Runtime;
+using System.Runtime.InteropServices;
+
+namespace Zenos.Runtime
+{
+    public static partial class RedHawk
+    {
+        [RuntimeExport("RhAllocateThunksMapping")] public static void RhAllocateThunksMapping() => DisplayError("RhAllocateThunksMapping");
+        [RuntimeExport("RhBulkMoveWithWriteBarrier")] public static void RhBulkMoveWithWriteBarrier() => DisplayError("RhBulkMoveWithWriteBarrier");
+        [RuntimeExport("RhCompareObjectContentsAndPadding")] public static void RhCompareObjectContentsAndPadding() => DisplayError("RhCompareObjectContentsAndPadding");
+        [RuntimeExport("RhConvertPublicKeyToPublicKeyToken")] public static void RhConvertPublicKeyToPublicKeyToken() => DisplayError("RhConvertPublicKeyToPublicKeyToken");
+        [RuntimeExport("RhCurrentNativeThreadId")] public static void RhCurrentNativeThreadId() => DisplayError("RhCurrentNativeThreadId");
+        [RuntimeExport("RhFindMethodStartAddress")] public static void RhFindMethodStartAddress() => DisplayError("RhFindMethodStartAddress");
+        [RuntimeExport("RhGetCodeTarget")] public static void RhGetCodeTarget() => DisplayError("RhGetCodeTarget");
+        [RuntimeExport("RhGetExceptionsForCurrentThread")] public static void RhGetExceptionsForCurrentThread() => DisplayError("RhGetExceptionsForCurrentThread");
+        [RuntimeExport("RhGetLoadedOSModules")] public static void RhGetLoadedOSModules() => DisplayError("RhGetLoadedOSModules");
+        [RuntimeExport("RhGetModuleFileName")] public static void RhGetModuleFileName() => DisplayError("RhGetModuleFileName");
+        [RuntimeExport("RhGetOSModuleFromPointer")] public static void RhGetOSModuleFromPointer() => DisplayError("RhGetOSModuleFromPointer");
+        [RuntimeExport("RhGetProcessCpuCount")] public static void RhGetProcessCpuCount() => DisplayError("RhGetProcessCpuCount");
+        [RuntimeExport("RhHandleFree")] public static void RhHandleFree() => DisplayError("RhHandleFree");
+        [RuntimeExport("RhHandleGet")] public static void RhHandleGet() => DisplayError("RhHandleGet");
+        [RuntimeExport("RhHandleGetDependent")] public static void RhHandleGetDependent() => DisplayError("RhHandleGetDependent");
+        [RuntimeExport("RhHandleSet")] public static void RhHandleSet() => DisplayError("RhHandleSet");
+        [RuntimeExport("RhReRegisterForFinalize")] public static void RhReRegisterForFinalize() => DisplayError("RhReRegisterForFinalize");
+        [RuntimeExport("RhSetErrorInfoBuffer")] public static void RhSetErrorInfoBuffer() => DisplayError("RhSetErrorInfoBuffer");
+        [RuntimeExport("RhSetThreadExitCallback")] public static void RhSetThreadExitCallback() => DisplayError("RhSetThreadExitCallback");
+        [RuntimeExport("RhSpinWait")] public static void RhSpinWait() => DisplayError("RhSpinWait");
+        [RuntimeExport("RhSuppressFinalize")] public static void RhSuppressFinalize() => DisplayError("RhSuppressFinalize");
+        [RuntimeExport("RhUnbox")] public static void RhUnbox() => DisplayError("RhUnbox");
+        [RuntimeExport("RhYield")] public static void RhYield() => DisplayError("RhYield");
+        [RuntimeExport("RhpAcquireCastCacheLock")] public static void RhpAcquireCastCacheLock() => DisplayError("RhpAcquireCastCacheLock");
+        [RuntimeExport("RhpAcquireThunkPoolLock")] public static void RhpAcquireThunkPoolLock() => DisplayError("RhpAcquireThunkPoolLock");
+        [RuntimeExport("RhpArrayClear")] public static void RhpArrayClear() => DisplayError("RhpArrayClear");
+        [RuntimeExport("RhpArrayCopy")] public static void RhpArrayCopy() => DisplayError("RhpArrayCopy");
+        [RuntimeExport("RhpBox")] public static void RhpBox() => DisplayError("RhpBox");
+        [RuntimeExport("RhpByRefAssignRef")] public static void RhpByRefAssignRef() => DisplayError("RhpByRefAssignRef");
+        [RuntimeExport("RhpCallCatchFunclet")] public static void RhpCallCatchFunclet() => DisplayError("RhpCallCatchFunclet");
+        [RuntimeExport("RhpCallFilterFunclet")] public static void RhpCallFilterFunclet() => DisplayError("RhpCallFilterFunclet");
+        [RuntimeExport("RhpCallFinallyFunclet")] public static void RhpCallFinallyFunclet() => DisplayError("RhpCallFinallyFunclet");
+        [RuntimeExport("RhpCheckedAssignRef")] public static void RhpCheckedAssignRef() => DisplayError("RhpCheckedAssignRef");
+        [RuntimeExport("RhpCheckedLockCmpXchg")] public static void RhpCheckedLockCmpXchg() => DisplayError("RhpCheckedLockCmpXchg");
+        [RuntimeExport("RhpCheckedXchg")] public static void RhpCheckedXchg() => DisplayError("RhpCheckedXchg");
+        [RuntimeExport("RhpCollect")] public static void RhpCollect() => DisplayError("RhpCollect");
+        [RuntimeExport("RhpCopyContextFromExInfo")] public static void RhpCopyContextFromExInfo() => DisplayError("RhpCopyContextFromExInfo");
+        [RuntimeExport("RhpCopyObjectContents")] public static void RhpCopyObjectContents() => DisplayError("RhpCopyObjectContents");
+        [RuntimeExport("RhpDbl2ULng")] public static void RhpDbl2ULng() => DisplayError("RhpDbl2ULng");
+        [RuntimeExport("RhpEHEnumInitFromStackFrameIterator")] public static void RhpEHEnumInitFromStackFrameIterator() => DisplayError("RhpEHEnumInitFromStackFrameIterator");
+        [RuntimeExport("RhpEHEnumNext")] public static void RhpEHEnumNext() => DisplayError("RhpEHEnumNext");
+        [RuntimeExport("RhpEndNoGCRegion")] public static void RhpEndNoGCRegion() => DisplayError("RhpEndNoGCRegion");
+        [RuntimeExport("RhpFallbackFailFast")] public static void RhpFallbackFailFast() => DisplayError("RhpFallbackFailFast");
+        [RuntimeExport("RhpGetCastableObjectDispatchHelper")] public static void RhpGetCastableObjectDispatchHelper() => DisplayError("RhpGetCastableObjectDispatchHelper");
+        [RuntimeExport("RhpGetCastableObjectDispatchHelper_TailCalled")] public static void RhpGetCastableObjectDispatchHelper_TailCalled() => DisplayError("RhpGetCastableObjectDispatchHelper_TailCalled");
+        [RuntimeExport("RhpGetCastableObjectDispatch_CommonStub")] public static void RhpGetCastableObjectDispatch_CommonStub() => DisplayError("RhpGetCastableObjectDispatch_CommonStub");
+        [RuntimeExport("RhpGetClasslibFunctionFromCodeAddress")] public static void RhpGetClasslibFunctionFromCodeAddress() => DisplayError("RhpGetClasslibFunctionFromCodeAddress");
+        [RuntimeExport("RhpGetClasslibFunctionFromEEType")] public static void RhpGetClasslibFunctionFromEEType() => DisplayError("RhpGetClasslibFunctionFromEEType");
+        [RuntimeExport("RhpGetCurrentThreadStackTrace")] public static void RhpGetCurrentThreadStackTrace() => DisplayError("RhpGetCurrentThreadStackTrace");
+        [RuntimeExport("RhpGetDispatchCellInfo")] public static void RhpGetDispatchCellInfo() => DisplayError("RhpGetDispatchCellInfo");
+        [RuntimeExport("RhpGetDispatchMap")] public static void RhpGetDispatchMap() => DisplayError("RhpGetDispatchMap");
+        [RuntimeExport("RhpGetGcTotalMemory")] public static void RhpGetGcTotalMemory() => DisplayError("RhpGetGcTotalMemory");
+        [RuntimeExport("RhpGetNextFinalizableObject")] public static void RhpGetNextFinalizableObject() => DisplayError("RhpGetNextFinalizableObject");
+        [RuntimeExport("RhpGetNextFinalizerInitCallback")] public static void RhpGetNextFinalizerInitCallback() => DisplayError("RhpGetNextFinalizerInitCallback");
+        [RuntimeExport("RhpGetNumThunkBlocksPerMapping")] public static void RhpGetNumThunkBlocksPerMapping() => DisplayError("RhpGetNumThunkBlocksPerMapping");
+        [RuntimeExport("RhpGetNumThunksPerBlock")] public static void RhpGetNumThunksPerBlock() => DisplayError("RhpGetNumThunksPerBlock");
+        [RuntimeExport("RhpGetRequestedExceptionEvents")] public static void RhpGetRequestedExceptionEvents() => DisplayError("RhpGetRequestedExceptionEvents");
+        [RuntimeExport("RhpGetTailCallTLSDispatchCell")] public static void RhpGetTailCallTLSDispatchCell() => DisplayError("RhpGetTailCallTLSDispatchCell");
+        [RuntimeExport("RhpGetThreadAbortException")] public static void RhpGetThreadAbortException() => DisplayError("RhpGetThreadAbortException");
+        [RuntimeExport("RhpGetThunkBlockSize")] public static void RhpGetThunkBlockSize() => DisplayError("RhpGetThunkBlockSize");
+        [RuntimeExport("RhpGetThunkDataBlockAddress")] public static void RhpGetThunkDataBlockAddress() => DisplayError("RhpGetThunkDataBlockAddress");
+        [RuntimeExport("RhpGetThunkSize")] public static void RhpGetThunkSize() => DisplayError("RhpGetThunkSize");
+        [RuntimeExport("RhpGetThunkStubsBlockAddress")] public static void RhpGetThunkStubsBlockAddress() => DisplayError("RhpGetThunkStubsBlockAddress");
+        [RuntimeExport("RhpHandleAllocDependent")] public static void RhpHandleAllocDependent() => DisplayError("RhpHandleAllocDependent");
+        [RuntimeExport("RhpInitialDynamicInterfaceDispatch")] public static void RhpInitialDynamicInterfaceDispatch() => DisplayError("RhpInitialDynamicInterfaceDispatch");
+        [RuntimeExport("RhpLockCmpXchg32")] public static void RhpLockCmpXchg32() => DisplayError("RhpLockCmpXchg32");
+        [RuntimeExport("RhpLockCmpXchg64")] public static void RhpLockCmpXchg64() => DisplayError("RhpLockCmpXchg64");
+        [RuntimeExport("RhpMemoryBarrier")] public static void RhpMemoryBarrier() => DisplayError("RhpMemoryBarrier");
+        [RuntimeExport("RhpReleaseCastCacheLock")] public static void RhpReleaseCastCacheLock() => DisplayError("RhpReleaseCastCacheLock");
+        [RuntimeExport("RhpReleaseThunkPoolLock")] public static void RhpReleaseThunkPoolLock() => DisplayError("RhpReleaseThunkPoolLock");
+        [RuntimeExport("RhpRethrow")] public static void RhpRethrow() => DisplayError("RhpRethrow");
+        [RuntimeExport("RhpSearchDispatchCellCache")] public static void RhpSearchDispatchCellCache() => DisplayError("RhpSearchDispatchCellCache");
+        [RuntimeExport("RhpSendExceptionEventToDebugger")] public static void RhpSendExceptionEventToDebugger() => DisplayError("RhpSendExceptionEventToDebugger");
+        [RuntimeExport("RhpSetTLSDispatchCell")] public static void RhpSetTLSDispatchCell() => DisplayError("RhpSetTLSDispatchCell");
+        [RuntimeExport("RhpSetThreadDoNotTriggerGC")] public static void RhpSetThreadDoNotTriggerGC() => DisplayError("RhpSetThreadDoNotTriggerGC");
+        [RuntimeExport("RhpSfiInit")] public static void RhpSfiInit() => DisplayError("RhpSfiInit");
+        [RuntimeExport("RhpSfiNext")] public static void RhpSfiNext() => DisplayError("RhpSfiNext");
+        [RuntimeExport("RhpSignalFinalizationComplete")] public static void RhpSignalFinalizationComplete() => DisplayError("RhpSignalFinalizationComplete");
+        [RuntimeExport("RhpStartNoGCRegion")] public static void RhpStartNoGCRegion() => DisplayError("RhpStartNoGCRegion");
+        [RuntimeExport("RhpThrowEx")] public static void RhpThrowEx() => DisplayError("RhpThrowEx");
+        [RuntimeExport("RhpUpdateDispatchCellCache")] public static void RhpUpdateDispatchCellCache() => DisplayError("RhpUpdateDispatchCellCache");
+        [RuntimeExport("RhpValidateExInfoStack")] public static void RhpValidateExInfoStack() => DisplayError("RhpValidateExInfoStack");
+        [RuntimeExport("RhpWaitForFinalizerRequest")] public static void RhpWaitForFinalizerRequest() => DisplayError("RhpWaitForFinalizerRequest");
+        [RuntimeExport("__fail_fast")] public static void __fail_fast() => DisplayError("__fail_fast");
+        [RuntimeExport("ceil")] public static void ceil() => DisplayError("ceil");
+        [RuntimeExport("cos")] public static void cos() => DisplayError("cos");
+        [RuntimeExport("fabs")] public static void fabs() => DisplayError("fabs");
+        [RuntimeExport("floor")] public static void floor() => DisplayError("floor");
+        [RuntimeExport("fmod")] public static void fmod() => DisplayError("fmod");
+        [RuntimeExport("memcpy")] public static void memcpy() => DisplayError("memcpy");
+        [RuntimeExport("memmove")] public static void memmove() => DisplayError("memmove");
+        [RuntimeExport("memset")] public static void memset() => DisplayError("memset");
+        [RuntimeExport("pow")] public static void pow() => DisplayError("pow");
+        [RuntimeExport("sin")] public static void sin() => DisplayError("sin");
+        [RuntimeExport("sqrt")] public static void sqrt() => DisplayError("sqrt");
+        [RuntimeExport("tan")] public static void tan() => DisplayError("tan");
+
+
+    }
+}

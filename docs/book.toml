@@ -1,0 +1,8 @@
+[book]
+authors = ["Kevin Thompson"]
+multilingual = false
+src = "src"
+title = "Zenos OS Development"
+
+[build]
+build-dir = "../../zenos-os.github.io/"

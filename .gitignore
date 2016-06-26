@@ -1,0 +1,9 @@
+bin
+obj
+x64
+.vs/
+*.user
+*.suo
+*.db
+*.opendb
+serial.log

@@ -1,0 +1,19 @@
+# Auto detect text files and perform LF normalization
+*        text=auto
+
+*.cs     text diff=csharp
+*.java   text diff=java
+*.html   text diff=html
+*.css    text
+*.js     text
+*.sql    text
+
+*.csproj text merge=union
+*.sln    text merge=union eol=crlf
+
+*.docx   diff=astextplain
+*.DOCX   diff=astextplain
+
+
+tools\gdb.exe filter=lfs diff=lfs merge=lfs -text
+tools\qemu filter=lfs diff=lfs merge=lfs -text
