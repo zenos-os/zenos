@@ -1,0 +1,45 @@
+{
+  "locked": false,
+  "version": 2,
+  "targets": {
+    "DNXCore,Version=v5.0": {
+      "NETStandard.Library/1.5.0-rc2-24027": {
+        "type": "package"
+      }
+    },
+    "DNXCore,Version=v5.0/win7-x64": {
+      "NETStandard.Library/1.5.0-rc2-24027": {
+        "type": "package"
+      }
+    },
+    "DNXCore,Version=v5.0/osx.10.10-x64": {
+      "NETStandard.Library/1.5.0-rc2-24027": {
+        "type": "package"
+      }
+    },
+    "DNXCore,Version=v5.0/ubuntu.14.04-x64": {
+      "NETStandard.Library/1.5.0-rc2-24027": {
+        "type": "package"
+      }
+    }
+  },
+  "libraries": {
+    "NETStandard.Library/1.5.0-rc2-24027": {
+      "type": "package",
+      "sha512": "4f0PviqALhzt6cOGUFibsaXKN+Rh/lwF95LXH9sYURkGjrn28NvkbK18Zw5BXLIL2v2TqzPgaSKsKhUniNMtXA==",
+      "files": [
+        "dotnet_library_license.txt",
+        "NETStandard.Library.1.5.0-rc2-24027.nupkg",
+        "NETStandard.Library.1.5.0-rc2-24027.nupkg.sha512",
+        "NETStandard.Library.nuspec",
+        "ThirdPartyNotices.txt"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "": [
+      "NETStandard.Library >= 1.0.0-rc2-23819"
+    ],
+    "DNXCore,Version=v5.0": []
+  }
+}

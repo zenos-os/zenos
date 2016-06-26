@@ -1,8 +1,40 @@
-global start
+global __multiboot_entry__
 extern long_mode_start
 
-section .text
+section .text align=8
 bits 32
+
+__multiboot_entry__:
+header_start:
+    dd 0xe85250d6                ; magic number (multiboot 2)
+    dd 0                         ; architecture 0 (protected mode i386)
+    dd header_end - header_start ; header length
+    ; checksum
+    dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
+
+    ; address tag
+    dw 2                ; type
+    dw 0                ; flags
+    dd 0x18             ; size
+    dd header_start     ; header_addr
+    dd 0x00101000       ; load_addr
+    dd 0                ; load_end_addr
+    dd __bss_end_addr   ; bss_end_addr
+
+    ; entry address tag
+    dw 3                ; type
+    dw 0                ; flags
+    dd 0xC              ; size
+    dd start            ; header_addr
+
+    ; insert optional multiboot tags here
+
+    ; required end tag
+    dw 0    ; type
+    dw 0    ; flags
+    dd 0    ; size
+header_end:
+
 start:
     mov esp, stack_top
 
@@ -18,16 +50,15 @@ start:
 
     ; update selectors
     mov ax, gdt64.data
-    mov ss, ax
-    mov ds, ax
-    mov es, ax
+    mov ss, ax  ; stack selector
+    mov ds, ax  ; data selector
+    mov es, ax  ; extra selector
 
     jmp gdt64.code:long_mode_start
 
     ; print `OK` to screen
     mov dword [0xb8000], 0x2f4b2f4f
     hlt
-
 
 set_up_page_tables:
     ; map first P4 entry to P3 table
@@ -42,6 +73,7 @@ set_up_page_tables:
 
     ; map each P2 entry to a huge 2MiB page
     mov ecx, 0         ; counter variable
+
 .map_p2_table:
     ; map ecx-th P2 entry to a huge page that starts at address 2MiB*ecx
     mov eax, 0x200000  ; 2MiB
@@ -96,6 +128,7 @@ check_multiboot:
     mov al, "0"
     jmp error
 
+; Throw error 1 if the CPU doesn't support the CPUID command.
 check_cpuid:
     ; Check if CPUID is supported by attempting to flip the ID bit (bit 21)
     ; in the FLAGS register. If we can flip it, CPUID is available.
@@ -132,7 +165,6 @@ check_cpuid:
     mov al, "1"
     jmp error
 
-
 check_long_mode:
     ; test if extended processor info in available
     mov eax, 0x80000000    ; implicit argument for cpuid
@@ -151,7 +183,6 @@ check_long_mode:
     jmp error
 
 
-
 section .bss
 align 4096
 p4_table:
@@ -163,13 +194,14 @@ p2_table:
 stack_bottom:
     resb 64
 stack_top:
+__bss_end_addr:
 
 section .rodata
 gdt64:
     dq 0 ; zero entry
-.code: equ $ - gdt64
+.code: equ $ - gdt64 ; new
     dq (1<<44) | (1<<47) | (1<<41) | (1<<43) | (1<<53) ; code segment
-.data: equ $ - gdt64
+.data: equ $ - gdt64 ; new
     dq (1<<44) | (1<<47) | (1<<41) ; data segment
 .pointer:
     dw $ - gdt64 - 1

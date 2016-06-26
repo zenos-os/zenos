@@ -1,0 +1,17 @@
+obj\boot.obj
+obj\long_mode_init.obj
+obj\red_hawk.obj
+obj\Debug\dnxcore50\native\kos.obj
+/filealign:0x1000
+/safeseh:no
+/BASE:0x00100000
+/DYNAMICBASE:NO
+/ENTRY:__multiboot_entry__
+/FIXED
+/GUARD:NO
+/MACHINE:X64
+/MAP:bin\kernel.map
+/NODEFAULTLIB:LIBC
+/NOLOGO
+/OUT:bin\kernel.bin
+/SUBSYSTEM:BOOT_APPLICATION

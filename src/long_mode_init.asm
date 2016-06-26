@@ -12,6 +12,8 @@ long_mode_start:
     ;call __managed__Main
 
     ; print `OKAY` to screen
+    ;extern RhpReversePInvoke2 
+    ;call RhpReversePInvoke2
     mov rax, 0x2f592f412f4b2f4f
     mov qword [0xb8000], rax
     hlt

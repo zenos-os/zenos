@@ -1,0 +1,5 @@
+E:\code\OsDev\kos\bin\Debug\dnxcore50\kos.dll
+--dgmllog:E:\code\OsDev\kos\obj\Debug\dnxcore50\native\kos.dgml
+-r:E:\code\OsDev\corert\bin\Product\Windows_NT.x64.Debug\System.Private.CoreLib\System.Private.CoreLib.dll
+-r:E:\code\OsDev\corert\Tools\dotnetcli\sdk\1.0.0-rc2-002416\appdepsdk\System.Runtime.dll
+-o:E:\code\OsDev\kos\obj\Debug\dnxcore50\native\kos.obj

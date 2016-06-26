@@ -1,0 +1,7 @@
+
+dotnet build --native --ilcpath ~/src/corert/bin/Product/Linux.x64.Debug/packaging/publish1/
+
+
+sections look jacked. cant get our OKAY any more after linking everything all together.
+
+missing .bss though not sure if that matters... maybe need to mess with multiboot sections or something
