@@ -11,105 +11,105 @@ namespace StubGen
     {
         private static readonly string[] UnresolvedLinks = new[]
         {
-            "RhpReversePInvoke2",
-            "RhpReversePInvokeReturn2",
-            "RhpAssignRef",
-            "RhpDbl2ULng",
-            "RhpEtwExceptionThrown",
-            "RhGetThreadLocalStorageForDynamicType",
-            "RhpThrowEx",
-            "RhpCheckedAssignRef",
-            "RhpGetDispatchCellInfo",
-            "RhpUpdateDispatchCellCache",
-            "RhpFallbackFailFast",
-            "RhpSearchDispatchCellCache",
-            "RhpPInvoke",
-            "RhpWaitForFinalizerRequest",
-            "RhpPInvokeReturn",
-            "RhpSignalFinalizationComplete",
-            "RhpValidateExInfoStack",
-            "RhpCollect",
-            "RhpGetGcTotalMemory",
-            "RhpNewFinalizable",
-            "RhpNewFast",
-            "RhpNewArray",
-            "RhpBox",
-            "RhUnbox",
-            "RhpCopyObjectContents",
-            "RhpGetCurrentThreadStackTrace",
-            "memset",
-            "RhpSfiInit",
-            "RhpSfiNext",
-            "__not_yet_implemented",
-            "RhpGetClasslibFunction",
-            "RhpSetThreadDoNotTriggerGC",
-            "RhpCallCatchFunclet",
-            "RhpGetNextFinalizerInitCallback",
-            "RhpGetNextFinalizableObject",
-            "RhpCheckedLockCmpXchg",
-            "RhGetModuleFromEEType",
-            "RhpCreateModuleManager",
-            "RhpGetModuleSection",
-            "RhpArrayCopy",
-            "IsDebuggerPresent",
-            "RaiseFailFastException",
-            "RhHandleGet",
-            "RhpGetRequestedExceptionEvents",
-            "RhpSendExceptionEventToDebugger",
-            "RhpEHEnumInitFromStackFrameIterator",
-            "RhpCallFilterFunclet",
-            "RhpEHEnumNext",
-            "RhpCopyContextFromExInfo",
             "__fail_fast",
-            "RhpCallFinallyFunclet",
-            "RhpAcquireCastCacheLock",
-            "PalGetTickCount64",
-            "RhpInitialDynamicInterfaceDispatch",
-            "RhHandleSet",
-            "RhpHandleAlloc",
-            "RhpReleaseCastCacheLock",
-            "RhGetGenericInstantiation",
-            "GetTickCount64",
-            "RhSpinWait",
-            "RhGetExceptionsForCurrentThread",
-            "GetCurrentThreadId",
-            "RhSetErrorInfoBuffer",
-            "memmove",
-            "RhpGetDispatchMap",
-            "SetEvent",
-            "GetLastError",
-            "GetNativeSystemInfo",
-            "GetProcessHeap",
-            "HeapAlloc",
-            "memcpy",
-            "RhpByRefAssignRef",
-            "OutputDebugStringW",
-            "RhHandleGetDependent",
-            "RhHandleFree",
-            "RhFindMethodStartAddress",
-            "RhGetModuleFromPointer",
-            "LCMapStringEx",
-            "CompareStringEx",
-            "RhpCheckedXchg",
-            "RhGetModuleFileName",
-            "CreateEventExW",
-            "RhSuppressFinalize",
+            "__not_yet_implemented",
+            "_ecvt_s",
             "CloseHandle",
-            "GetLocaleInfoEx",
-            "ResolveLocaleName",
-            "RhGetCodeTarget",
-            "RhpHandleAllocDependent",
+            "CoCreateGuid",
+            "CoGetApartmentType",
+            "CompareStringEx",
+            "CompareStringOrdinal",
+            "CreateEventExW",
+            "EnumCalendarInfoExEx",
+            "EnumTimeFormatsEx",
             "floor",
             "fmod",
-            "_ecvt_s",
-            "EnumCalendarInfoExEx",
-            "CompareStringOrdinal",
-            "RhCompatibleReentrantWaitAny",
-            "WaitForMultipleObjectsEx",
-            "EnumTimeFormatsEx",
-            "CoGetApartmentType",
             "GetCalendarInfoEx",
-            "CoCreateGuid",
+            "GetCurrentThreadId",
+            "GetLastError",
+            "GetLocaleInfoEx",
+            "GetNativeSystemInfo",
+            "GetProcessHeap",
+            "GetTickCount64",
+            "HeapAlloc",
+            "IsDebuggerPresent",
+            "LCMapStringEx",
+            "memcpy",
+            "memmove",
+            "memset",
+            "OutputDebugStringW",
+            "PalGetTickCount64",
+            "RaiseFailFastException",
+            "ResolveLocaleName",
+            "RhCompatibleReentrantWaitAny",
+            "RhFindMethodStartAddress",
+            "RhGetCodeTarget",
+            "RhGetExceptionsForCurrentThread",
+            "RhGetGenericInstantiation",
+            "RhGetModuleFileName",
+            "RhGetModuleFromEEType",
+            "RhGetModuleFromPointer",
+            "RhGetThreadLocalStorageForDynamicType",
+            "RhHandleFree",
+            "RhHandleGet",
+            "RhHandleGetDependent",
+            "RhHandleSet",
+            "RhpAcquireCastCacheLock",
+            "RhpArrayCopy",
+            "RhpAssignRef",
+            "RhpBox",
+            "RhpByRefAssignRef",
+            "RhpCallCatchFunclet",
+            "RhpCallFilterFunclet",
+            "RhpCallFinallyFunclet",
+            "RhpCheckedAssignRef",
+            "RhpCheckedLockCmpXchg",
+            "RhpCheckedXchg",
+            "RhpCollect",
+            "RhpCopyContextFromExInfo",
+            "RhpCopyObjectContents",
+            "RhpCreateModuleManager",
+            "RhpDbl2ULng",
+            "RhpEHEnumInitFromStackFrameIterator",
+            "RhpEHEnumNext",
+            "RhpEtwExceptionThrown",
+            "RhpFallbackFailFast",
+            "RhpGetClasslibFunction",
+            "RhpGetCurrentThreadStackTrace",
+            "RhpGetDispatchCellInfo",
+            "RhpGetDispatchMap",
+            "RhpGetGcTotalMemory",
+            "RhpGetModuleSection",
+            "RhpGetNextFinalizableObject",
+            "RhpGetNextFinalizerInitCallback",
+            "RhpGetRequestedExceptionEvents",
+            "RhpHandleAlloc",
+            "RhpHandleAllocDependent",
+            "RhpInitialDynamicInterfaceDispatch",
+            "RhpNewArray",
+            "RhpNewFast",
+            "RhpNewFinalizable",
+            "RhpPInvoke",
+            "RhpPInvokeReturn",
+            "RhpReleaseCastCacheLock",
+            "RhpReversePInvoke2",
+            "RhpReversePInvokeReturn2",
+            "RhpSearchDispatchCellCache",
+            "RhpSendExceptionEventToDebugger",
+            "RhpSetThreadDoNotTriggerGC",
+            "RhpSfiInit",
+            "RhpSfiNext",
+            "RhpSignalFinalizationComplete",
+            "RhpThrowEx",
+            "RhpUpdateDispatchCellCache",
+            "RhpValidateExInfoStack",
+            "RhpWaitForFinalizerRequest",
+            "RhSetErrorInfoBuffer",
+            "RhSpinWait",
+            "RhSuppressFinalize",
+            "RhUnbox",
+            "SetEvent",
+            "WaitForMultipleObjectsEx",
         };
 
 
@@ -122,8 +122,30 @@ namespace StubGen
                     asm.WriteLine($"global {link}");
 
                 asm.WriteLine();
+
+                asm.WriteLine("section .data");
+                asm.WriteLine("console_row:  db 0");
+                asm.WriteLine();
+
                 asm.WriteLine("section .text");
                 asm.WriteLine("bits 64");
+                asm.WriteLine();
+
+                asm.WriteLine("set_cursor:");
+                asm.WriteLine("    mov rbx, [console_row]");
+                asm.WriteLine("    imul rbx, 160");
+                asm.WriteLine("    add rbx, 0xb8000");
+                asm.WriteLine("    ret");
+                asm.WriteLine();
+
+                asm.WriteLine("next_console_row:");
+                asm.WriteLine("    inc byte [console_row]");
+                asm.WriteLine("    cmp byte [console_row], 3");
+                asm.WriteLine("    ja .quit");
+                asm.WriteLine("    ret");
+                asm.WriteLine(".quit:");
+                asm.WriteLine("    hlt");
+                asm.WriteLine();
 
                 foreach (var link in UnresolvedLinks)
                 {
@@ -139,18 +161,21 @@ namespace StubGen
                             let b = (byte) c
                             select "4f" + b.ToString("x").PadLeft(2, '0')
                         let mov = $"    mov rax, 0x{string.Join("", qword)} ; {chars}"
-                        let pos = (0xb8000 + g.Key*4).ToString("x8")
-                        let draw = $"    mov qword[0x{pos}], rax"
+                        let pos = (g.Key*8).ToString("X4")
+                        let draw = $"    mov qword[rbx + 0x{pos}], rax"
                         select new {mov, draw};
 
                     asm.WriteLine($"{link}:");
                     asm.WriteLine($"    ; print `{errorMessage}` to screen");
+                    asm.WriteLine($"    call set_cursor");
+
                     foreach (var write in writes)
                     {
                         asm.WriteLine(write.mov);
                         asm.WriteLine(write.draw);
                     }
-                    asm.WriteLine("    hlt");
+                    asm.WriteLine("    call next_console_row"); // increment row number
+                    asm.WriteLine("    ret");
                     asm.WriteLine();
                 }
             }

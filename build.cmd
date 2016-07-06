@@ -13,8 +13,9 @@ echo Done.&goto:eof
 :main
 
   call:compile_asm boot
-  call:compile_asm long_mode_init
+  call:compile_asm multiboot_header
   call:compile_asm red_hawk
+  call:compile_asm load_end_addr
   E:\code\OsDev\corert\src\ILCompiler\desktop\bin\Debug\ilc.exe @ilc.rsp
   link @src\linker.rsp
 

@@ -1,39 +1,9 @@
-global __multiboot_entry__
-extern long_mode_start
+global start
+global stack_top
+global __load_end_addr
 
-section .text align=8
+section .text
 bits 32
-
-__multiboot_entry__:
-header_start:
-    dd 0xe85250d6                ; magic number (multiboot 2)
-    dd 0                         ; architecture 0 (protected mode i386)
-    dd header_end - header_start ; header length
-    ; checksum
-    dd 0x100000000 - (0xe85250d6 + 0 + (header_end - header_start))
-
-    ; address tag
-    dw 2                ; type
-    dw 0                ; flags
-    dd 0x18             ; size
-    dd header_start     ; header_addr
-    dd 0x00101000       ; load_addr
-    dd 0                ; load_end_addr
-    dd __bss_end_addr   ; bss_end_addr
-
-    ; entry address tag
-    dw 3                ; type
-    dw 0                ; flags
-    dd 0xC              ; size
-    dd start            ; header_addr
-
-    ; insert optional multiboot tags here
-
-    ; required end tag
-    dw 0    ; type
-    dw 0    ; flags
-    dd 0    ; size
-header_end:
 
 start:
     mov esp, stack_top
@@ -45,22 +15,22 @@ start:
     call set_up_page_tables
     call enable_paging
 
-    ; load the 64-bit GDT
-    lgdt [gdt64.pointer]
+    ;; load the 64-bit GDT
+    lgdt [gdtr]
 
-    ; update selectors
-    mov ax, gdt64.data
-    mov ss, ax  ; stack selector
-    mov ds, ax  ; data selector
-    mov es, ax  ; extra selector
-
-    jmp gdt64.code:long_mode_start
+    jmp gdt.code:long_mode_start
 
     ; print `OK` to screen
     mov dword [0xb8000], 0x2f4b2f4f
     hlt
 
+
 set_up_page_tables:
+    ; recursive map P4
+    mov eax, p4_table
+    or eax, 0b11 ; present + writable
+    mov [p4_table + 511 * 8], eax
+
     ; map first P4 entry to P3 table
     mov eax, p3_table
     or eax, 0b11 ; present + writable
@@ -182,9 +152,48 @@ check_long_mode:
     mov al, "2"
     jmp error
 
+bits 64
+
+long_mode_start:
+
+    ; update selectors
+    mov rax, gdt.data
+    mov ds, rax
+    mov es, rax
+    mov fs, rax
+    mov gs, rax
+    mov ss, rax
+
+    ; extern dotnet_main
+    ;call dotnet_main
+    extern __managed__Main
+    mov	esi, 2
+    mov	edi, 1
+    call __managed__Main
+
+    ; print `OKAY` to screen
+    ;extern RhpReversePInvoke2
+    ;call RhpReversePInvoke2
+    mov rax, 0x2f592f412f4b2f4f
+    mov qword [0xb8000], rax
+    hlt
+
+gdtr:
+    dw gdt.end + 1
+    dq gdt
+
+gdt:
+.null equ $ - gdt
+    dq 0 ; zero entry
+.code: equ $ - gdt
+    dq (1<<44) | (1<<47) | (1<<41) | (1<<43) | (1<<53) ; code segment
+.data: equ $ - gdt
+    dq (1<<44) | (1<<47) | (1<<41) ; data segment
+.end: equ $ - gdt
 
 section .bss
 align 4096
+
 p4_table:
     resb 4096
 p3_table:
@@ -192,17 +201,5 @@ p3_table:
 p2_table:
     resb 4096
 stack_bottom:
-    resb 64
+    resb 4096 * 2
 stack_top:
-__bss_end_addr:
-
-section .rodata
-gdt64:
-    dq 0 ; zero entry
-.code: equ $ - gdt64 ; new
-    dq (1<<44) | (1<<47) | (1<<41) | (1<<43) | (1<<53) ; code segment
-.data: equ $ - gdt64 ; new
-    dq (1<<44) | (1<<47) | (1<<41) ; data segment
-.pointer:
-    dw $ - gdt64 - 1
-    dq gdt64
