@@ -1,6 +1,0 @@
-
-dotnet build --native --ilcpath ~/src/corert/bin/Product/Linux.x64.Debug/packaging/publish1/
-
-
-obj\Debug\dnxcore50\native\kos.obj
-obj\red_hawk.obj

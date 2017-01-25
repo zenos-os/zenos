@@ -1,10 +1,17 @@
 obj\multiboot_header.obj
 obj\boot.obj
+obj\AllocFast.obj
 obj\red_hawk.obj
-obj\Debug\dnxcore50\native\kos.obj
+obj\globals.obj
+obj\OS.obj
+obj\modules.obj
+obj\memory.obj
+obj\dotnet.obj
 obj\load_end_addr.obj
 /filealign:0x1000
+/merge:.modules=.rdata
 /BASE:0x00100000
+/DEBUG:FULL
 /DYNAMICBASE:NO
 /ENTRY:mb_header
 /FIXED
@@ -13,5 +20,6 @@ obj\load_end_addr.obj
 /NODEFAULTLIB
 /NOLOGO
 /OUT:bin\kernel.bin
+/PDB:bin\kernel.pdb
 /SAFESEH:no
 /SUBSYSTEM:BOOT_APPLICATION

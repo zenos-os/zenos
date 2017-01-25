@@ -1,6 +1,7 @@
 global start
 global stack_top
 global __load_end_addr
+global start_dotnet
 
 section .text
 bits 32
@@ -27,19 +28,19 @@ start:
 
 set_up_page_tables:
     ; recursive map P4
-    mov eax, p4_table
-    or eax, 0b11 ; present + writable
-    mov [p4_table + 511 * 8], eax
+    ;mov eax, p4_table
+    ;or eax, 0b11 ; present + writable
+    ;mov [p4_table + 511 * 8], eax
 
     ; map first P4 entry to P3 table
     mov eax, p3_table
     or eax, 0b11 ; present + writable
-    mov [p4_table], eax
+    mov dword [p4_table], eax
 
     ; map first P3 entry to P2 table
     mov eax, p2_table
     or eax, 0b11 ; present + writable
-    mov [p3_table], eax
+    mov dword [p3_table], eax
 
     ; map each P2 entry to a huge 2MiB page
     mov ecx, 0         ; counter variable
@@ -76,6 +77,7 @@ enable_paging:
     ; enable paging in the cr0 register
     mov eax, cr0
     or eax, 1 << 31
+    or eax, 1 << 16
     mov cr0, eax
 
     ret
@@ -157,23 +159,28 @@ bits 64
 long_mode_start:
 
     ; update selectors
+
     mov rax, gdt.data
     mov ds, rax
     mov es, rax
     mov fs, rax
-    mov gs, rax
     mov ss, rax
 
-    ; extern dotnet_main
-    ;call dotnet_main
-    extern __managed__Main
-    mov	esi, 2
-    mov	edi, 1
-    call __managed__Main
+    ;extern tls_CurrentThread
+    ;mov gs, [tls_CurrentThread]
+
+    ;extern __managed__Main
+    ;mov	esi, 2
+    ;mov	edi, 1
+    ;call __managed__Main
+
+    extern init_heap
+    call init_heap
+
+    extern start_dotnet
+    call start_dotnet
 
     ; print `OKAY` to screen
-    ;extern RhpReversePInvoke2
-    ;call RhpReversePInvoke2
     mov rax, 0x2f592f412f4b2f4f
     mov qword [0xb8000], rax
     hlt

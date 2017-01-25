@@ -1,0 +1,4 @@
+.\bin\Debug\OS.exe
+--dgmllog:.\obj\Debug\OS.dgml
+-r:.\System.Private.CoreLib.dll
+-o:..\obj\OS.obj

@@ -73,9 +73,6 @@ global RhpGetRequestedExceptionEvents
 global RhpHandleAlloc
 global RhpHandleAllocDependent
 global RhpInitialDynamicInterfaceDispatch
-global RhpNewArray
-global RhpNewFast
-global RhpNewFinalizable
 global RhpPInvoke
 global RhpPInvokeReturn
 global RhpReleaseCastCacheLock
@@ -97,9 +94,55 @@ global RhSuppressFinalize
 global RhUnbox
 global SetEvent
 global WaitForMultipleObjectsEx
+global RhpGetCastableObjectDispatchHelper
+global RhpGetCastableObjectDispatchHelper_TailCalled
+global RhpSetTLSDispatchCell
+global RhpGetTailCallTLSDispatchCell
+global RhpGetThunkSize
+global RhpCreateTypeManager
+global RhpAcquireThunkPoolLock
+global RhpReleaseThunkPoolLock
+global RhpGetThunkStubsBlockAddress
+global RhpGetCastableObjectDispatch_CommonStub
+global RhpGetThunkDataBlockAddress
+global RhpRegisterFrozenSegment
+global RhpGetNumThunksPerBlock
+global RhpGetNumThunkBlocksPerMapping
+global RhAllocateThunksMapping
+global RhpGetNextThunkStubsBlockAddress
+global RhGetThreadStaticStorageForModule
+global RhSetThreadStaticStorageForModule
+global RhDebugBreak
+global SetLastError
+global RhReRegisterForFinalize
+global pow
+global FindNLSStringEx
+global GetSystemTimeAsFileTime
+global GetDynamicTimeZoneInformation
+global RegQueryValueExW
+global RegCloseKey
+global RegEnumValueW
+global RegEnumKeyExW
+global RegQueryInfoKeyW
+global cos
+global sin
+global GetSystemDirectoryW
+global GetFileMUIPath
+global LoadLibraryExW
+global LoadStringW
+global FormatMessageW
+global tan
+global FreeLibrary
+global RhpGcAlloc
+global RhpValidateExInfoPop
+global RhpWaitForSuspend2
+global RhpWaitForGC2
+global RhpReversePInvokeAttachOrTrapThread2
+global RhpPublishObject
 
 section .data
 console_row:  db 0
+errors:  db 0
 
 section .text
 bits 64
@@ -110,13 +153,18 @@ set_cursor:
     add rbx, 0xb8000
     ret
 
+next_console_row_ignore:
+    inc byte [console_row]
+    ret
+
 next_console_row:
     inc byte [console_row]
-    cmp byte [console_row], 3
-    je .quit
+    inc byte [errors]
+    cmp byte [errors], 3
+    ja .quit
     ret
 .quit:
-    hlt
+    jmp .quit
 
 __fail_fast:
     ; print `Err: __fail_fast` to screen
@@ -1474,52 +1522,6 @@ RhpInitialDynamicInterfaceDispatch:
     call next_console_row
     ret
 
-RhpNewArray:
-    ; print `Err: RhpNewArray` to screen
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f414f774f654f4e ; NewA
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f794f614f724f72 ; rray
-    mov qword[rbx + 0x0018], rax
-    call next_console_row
-    ret
-
-RhpNewFast:
-    ; print `Err: RhpNewFast ` to screen
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f464f774f654f4e ; NewF
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f204f744f734f61 ; ast 
-    mov qword[rbx + 0x0018], rax
-    call next_console_row
-    ret
-
-RhpNewFinalizable:
-    ; print `Err: RhpNewFinalizable  ` to screen
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f464f774f654f4e ; NewF
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f6c4f614f6e4f69 ; inal
-    mov qword[rbx + 0x0018], rax
-    mov rax, 0x4f624f614f7a4f69 ; izab
-    mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f204f204f654f6c ; le  
-    mov qword[rbx + 0x0028], rax
-    call next_console_row
-    ret
-
 RhpPInvoke:
     ; print `Err: RhpPInvoke ` to screen
     call set_cursor
@@ -1585,9 +1587,9 @@ RhpReversePInvoke2:
     mov qword[rbx + 0x0018], rax
     mov rax, 0x4f6f4f764f6e4f49 ; Invo
     mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f204f324f654f6b ; ke2 
+    mov rax, 0x4f204f324f654f6b ; ke2
     mov qword[rbx + 0x0028], rax
-    call next_console_row
+    call next_console_row_ignore
     ret
 
 RhpReversePInvokeReturn2:
@@ -1609,7 +1611,7 @@ RhpReversePInvokeReturn2:
     mov qword[rbx + 0x0030], rax
     mov rax, 0x4f204f204f204f32 ; 2   
     mov qword[rbx + 0x0038], rax
-    call next_console_row
+    call next_console_row_ignore
     ret
 
 RhpSearchDispatchCellCache:
@@ -1783,7 +1785,7 @@ RhpValidateExInfoStack:
     mov qword[rbx + 0x0020], rax
     mov rax, 0x4f744f534f6f4f66 ; foSt
     mov qword[rbx + 0x0028], rax
-    mov rax, 0x4f204f6b4f634f61 ; ack 
+    mov rax, 0x4f204f6b4f634f61 ; ack
     mov qword[rbx + 0x0030], rax
     call next_console_row
     ret
@@ -1907,6 +1909,850 @@ WaitForMultipleObjectsEx:
     mov qword[rbx + 0x0030], rax
     mov rax, 0x4f204f204f204f78 ; x   
     mov qword[rbx + 0x0038], rax
+    call next_console_row
+    ret
+
+RhpGetCastableObjectDispatchHelper:
+    ; print `Err: RhpGetCastableObjectDispatchHelper ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f434f744f654f47 ; GetC
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f614f744f734f61 ; asta
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f4f4f654f6c4f62 ; bleO
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f634f654f6a4f62 ; bjec
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f734f694f444f74 ; tDis
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f634f744f614f70 ; patc
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f6c4f654f484f68 ; hHel
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f204f724f654f70 ; per 
+    mov qword[rbx + 0x0048], rax
+    call next_console_row
+    ret
+
+RhpGetCastableObjectDispatchHelper_TailCalled:
+    ; print `Err: RhpGetCastableObjectDispatchHelper_TailCalled  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f434f744f654f47 ; GetC
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f614f744f734f61 ; asta
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f4f4f654f6c4f62 ; bleO
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f634f654f6a4f62 ; bjec
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f734f694f444f74 ; tDis
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f634f744f614f70 ; patc
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f6c4f654f484f68 ; hHel
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f5f4f724f654f70 ; per_
+    mov qword[rbx + 0x0048], rax
+    mov rax, 0x4f6c4f694f614f54 ; Tail
+    mov qword[rbx + 0x0050], rax
+    mov rax, 0x4f6c4f6c4f614f43 ; Call
+    mov qword[rbx + 0x0058], rax
+    mov rax, 0x4f204f204f644f65 ; ed  
+    mov qword[rbx + 0x0060], rax
+    call next_console_row
+    ret
+
+RhpSetTLSDispatchCell:
+    ; print `Err: RhpSetTLSDispatchCell  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f544f744f654f53 ; SetT
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f694f444f534f4c ; LSDi
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f744f614f704f73 ; spat
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f654f434f684f63 ; chCe
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f204f204f6c4f6c ; ll  
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpGetTailCallTLSDispatchCell:
+    ; print `Err: RhpGetTailCallTLSDispatchCell  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f544f744f654f47 ; GetT
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f434f6c4f694f61 ; ailC
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f544f6c4f6c4f61 ; allT
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f694f444f534f4c ; LSDi
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f744f614f704f73 ; spat
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f654f434f684f63 ; chCe
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f204f204f6c4f6c ; ll  
+    mov qword[rbx + 0x0040], rax
+    call next_console_row
+    ret
+
+RhpGetThunkSize:
+    ; print `Err: RhpGetThunkSize` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f544f744f654f47 ; GetT
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f654f7a4f694f53 ; Size
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+RhpCreateTypeManager:
+    ; print `Err: RhpCreateTypeManager   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f614f654f724f43 ; Crea
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f794f544f654f74 ; teTy
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f614f4d4f654f70 ; peMa
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f654f674f614f6e ; nage
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f204f204f204f72 ; r   
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpAcquireThunkPoolLock:
+    ; print `Err: RhpAcquireThunkPoolLock` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f754f714f634f41 ; Acqu
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f544f654f724f69 ; ireT
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f6c4f6f4f6f4f50 ; Pool
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f6b4f634f6f4f4c ; Lock
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpReleaseThunkPoolLock:
+    ; print `Err: RhpReleaseThunkPoolLock` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f654f6c4f654f52 ; Rele
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f544f654f734f61 ; aseT
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f6c4f6f4f6f4f50 ; Pool
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f6b4f634f6f4f4c ; Lock
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpGetThunkStubsBlockAddress:
+    ; print `Err: RhpGetThunkStubsBlockAddress   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f544f744f654f47 ; GetT
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f624f754f744f53 ; Stub
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f6f4f6c4f424f73 ; sBlo
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f644f414f6b4f63 ; ckAd
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f734f654f724f64 ; dres
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f204f204f204f73 ; s   
+    mov qword[rbx + 0x0040], rax
+    call next_console_row
+    ret
+
+RhpGetCastableObjectDispatch_CommonStub:
+    ; print `Err: RhpGetCastableObjectDispatch_CommonStub` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f434f744f654f47 ; GetC
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f614f744f734f61 ; asta
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f4f4f654f6c4f62 ; bleO
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f634f654f6a4f62 ; bjec
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f734f694f444f74 ; tDis
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f634f744f614f70 ; patc
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f6f4f434f5f4f68 ; h_Co
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f6e4f6f4f6d4f6d ; mmon
+    mov qword[rbx + 0x0048], rax
+    mov rax, 0x4f624f754f744f53 ; Stub
+    mov qword[rbx + 0x0050], rax
+    call next_console_row
+    ret
+
+RhpGetThunkDataBlockAddress:
+    ; print `Err: RhpGetThunkDataBlockAddress` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f544f744f654f47 ; GetT
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f614f744f614f44 ; Data
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f634f6f4f6c4f42 ; Bloc
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f644f644f414f6b ; kAdd
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f734f734f654f72 ; ress
+    mov qword[rbx + 0x0038], rax
+    call next_console_row
+    ret
+
+RhpRegisterFrozenSegment:
+    ; print `Err: RhpRegisterFrozenSegment   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f694f674f654f52 ; Regi
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f724f654f744f73 ; ster
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f7a4f6f4f724f46 ; Froz
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f654f534f6e4f65 ; enSe
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f6e4f654f6d4f67 ; gmen
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f204f204f204f74 ; t   
+    mov qword[rbx + 0x0038], rax
+    call next_console_row
+    ret
+
+RhpGetNumThunksPerBlock:
+    ; print `Err: RhpGetNumThunksPerBlock` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f4e4f744f654f47 ; GetN
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f684f544f6d4f75 ; umTh
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f734f6b4f6e4f75 ; unks
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f424f724f654f50 ; PerB
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f6b4f634f6f4f6c ; lock
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpGetNumThunkBlocksPerMapping:
+    ; print `Err: RhpGetNumThunkBlocksPerMapping ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f4e4f744f654f47 ; GetN
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f684f544f6d4f75 ; umTh
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f424f6b4f6e4f75 ; unkB
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f6b4f634f6f4f6c ; lock
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f724f654f504f73 ; sPer
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f704f704f614f4d ; Mapp
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f204f674f6e4f69 ; ing 
+    mov qword[rbx + 0x0040], rax
+    call next_console_row
+    ret
+
+RhAllocateThunksMapping:
+    ; print `Err: RhAllocateThunksMapping` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f414f684f524f20 ;  RhA
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f634f6f4f6c4f6c ; lloc
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f544f654f744f61 ; ateT
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f704f614f4d4f73 ; sMap
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f674f6e4f694f70 ; ping
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpGetNextThunkStubsBlockAddress:
+    ; print `Err: RhpGetNextThunkStubsBlockAddress   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f4e4f744f654f47 ; GetN
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f544f744f784f65 ; extT
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6b4f6e4f754f68 ; hunk
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f624f754f744f53 ; Stub
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f6f4f6c4f424f73 ; sBlo
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f644f414f6b4f63 ; ckAd
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f734f654f724f64 ; dres
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f204f204f204f73 ; s   
+    mov qword[rbx + 0x0048], rax
+    call next_console_row
+    ret
+
+RhGetThreadStaticStorageForModule:
+    ; print `Err: RhGetThreadStaticStorageForModule  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f474f684f524f20 ;  RhG
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f684f544f744f65 ; etTh
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f644f614f654f72 ; read
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f744f614f744f53 ; Stat
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f744f534f634f69 ; icSt
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f674f614f724f6f ; orag
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f724f6f4f464f65 ; eFor
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f754f644f6f4f4d ; Modu
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f204f204f654f6c ; le  
+    mov qword[rbx + 0x0048], rax
+    call next_console_row
+    ret
+
+RhSetThreadStaticStorageForModule:
+    ; print `Err: RhSetThreadStaticStorageForModule  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f534f684f524f20 ;  RhS
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f684f544f744f65 ; etTh
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f644f614f654f72 ; read
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f744f614f744f53 ; Stat
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f744f534f634f69 ; icSt
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f674f614f724f6f ; orag
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f724f6f4f464f65 ; eFor
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f754f644f6f4f4d ; Modu
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f204f204f654f6c ; le  
+    mov qword[rbx + 0x0048], rax
+    call next_console_row
+    ret
+
+RhDebugBreak:
+    ; print `Err: RhDebugBreak   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f444f684f524f20 ;  RhD
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f674f754f624f65 ; ebug
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f614f654f724f42 ; Brea
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f204f204f6b ; k   
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+SetLastError:
+    ; print `Err: SetLastError   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f744f654f534f20 ;  Set
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f744f734f614f4c ; Last
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f6f4f724f724f45 ; Erro
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f204f204f72 ; r   
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+RhReRegisterForFinalize:
+    ; print `Err: RhReRegisterForFinalize` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f524f684f524f20 ;  RhR
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f674f654f524f65 ; eReg
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f654f744f734f69 ; iste
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f724f6f4f464f72 ; rFor
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f614f6e4f694f46 ; Fina
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f654f7a4f694f6c ; lize
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+pow:
+    ; print `Err: pow` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f774f6f4f704f20 ;  pow
+    mov qword[rbx + 0x0008], rax
+    call next_console_row
+    ret
+
+FindNLSStringEx:
+    ; print `Err: FindNLSStringEx` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f6e4f694f464f20 ;  Fin
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f534f4c4f4e4f64 ; dNLS
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f694f724f744f53 ; Stri
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f784f454f674f6e ; ngEx
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+GetSystemTimeAsFileTime:
+    ; print `Err: GetSystemTimeAsFileTime` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f744f654f474f20 ;  Get
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f744f734f794f53 ; Syst
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f694f544f6d4f65 ; emTi
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f734f414f654f6d ; meAs
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f654f6c4f694f46 ; File
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f654f6d4f694f54 ; Time
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+GetDynamicTimeZoneInformation:
+    ; print `Err: GetDynamicTimeZoneInformation  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f744f654f474f20 ;  Get
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f614f6e4f794f44 ; Dyna
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f544f634f694f6d ; micT
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f5a4f654f6d4f69 ; imeZ
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f494f654f6e4f6f ; oneI
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f724f6f4f664f6e ; nfor
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f694f744f614f6d ; mati
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f204f204f6e4f6f ; on  
+    mov qword[rbx + 0x0040], rax
+    call next_console_row
+    ret
+
+RegQueryValueExW:
+    ; print `Err: RegQueryValueExW   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f674f654f524f20 ;  Reg
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f724f654f754f51 ; Quer
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f6c4f614f564f79 ; yVal
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f784f454f654f75 ; ueEx
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f204f204f204f57 ; W   
+    mov qword[rbx + 0x0028], rax
+    call next_console_row
+    ret
+
+RegCloseKey:
+    ; print `Err: RegCloseKey` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f674f654f524f20 ;  Reg
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f734f6f4f6c4f43 ; Clos
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f794f654f4b4f65 ; eKey
+    mov qword[rbx + 0x0018], rax
+    call next_console_row
+    ret
+
+RegEnumValueW:
+    ; print `Err: RegEnumValueW  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f674f654f524f20 ;  Reg
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f6d4f754f6e4f45 ; Enum
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f754f6c4f614f56 ; Valu
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f204f574f65 ; eW  
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+RegEnumKeyExW:
+    ; print `Err: RegEnumKeyExW  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f674f654f524f20 ;  Reg
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f6d4f754f6e4f45 ; Enum
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f454f794f654f4b ; KeyE
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f204f574f78 ; xW  
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+RegQueryInfoKeyW:
+    ; print `Err: RegQueryInfoKeyW   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f674f654f524f20 ;  Reg
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f724f654f754f51 ; Quer
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f664f6e4f494f79 ; yInf
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f794f654f4b4f6f ; oKey
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f204f204f204f57 ; W   
+    mov qword[rbx + 0x0028], rax
+    call next_console_row
+    ret
+
+cos:
+    ; print `Err: cos` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f734f6f4f634f20 ;  cos
+    mov qword[rbx + 0x0008], rax
+    call next_console_row
+    ret
+
+sin:
+    ; print `Err: sin` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f6e4f694f734f20 ;  sin
+    mov qword[rbx + 0x0008], rax
+    call next_console_row
+    ret
+
+GetSystemDirectoryW:
+    ; print `Err: GetSystemDirectoryW` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f744f654f474f20 ;  Get
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f744f734f794f53 ; Syst
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f694f444f6d4f65 ; emDi
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f744f634f654f72 ; rect
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f574f794f724f6f ; oryW
+    mov qword[rbx + 0x0028], rax
+    call next_console_row
+    ret
+
+GetFileMUIPath:
+    ; print `Err: GetFileMUIPath ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f744f654f474f20 ;  Get
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f654f6c4f694f46 ; File
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f504f494f554f4d ; MUIP
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f684f744f61 ; ath 
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+LoadLibraryExW:
+    ; print `Err: LoadLibraryExW ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f614f6f4f4c4f20 ;  Loa
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f624f694f4c4f64 ; dLib
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f794f724f614f72 ; rary
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f574f784f45 ; ExW 
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+LoadStringW:
+    ; print `Err: LoadStringW` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f614f6f4f4c4f20 ;  Loa
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f724f744f534f64 ; dStr
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f574f674f6e4f69 ; ingW
+    mov qword[rbx + 0x0018], rax
+    call next_console_row
+    ret
+
+FormatMessageW:
+    ; print `Err: FormatMessageW ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f724f6f4f464f20 ;  For
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f4d4f744f614f6d ; matM
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f614f734f734f65 ; essa
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f574f654f67 ; geW 
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+tan:
+    ; print `Err: tan` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f6e4f614f744f20 ;  tan
+    mov qword[rbx + 0x0008], rax
+    call next_console_row
+    ret
+
+FreeLibrary:
+    ; print `Err: FreeLibrary` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f654f724f464f20 ;  Fre
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f624f694f4c4f65 ; eLib
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f794f724f614f72 ; rary
+    mov qword[rbx + 0x0018], rax
+    call next_console_row
+    ret
+
+RhpValidateExInfoPop:
+    ; print `Err: RhpValidateExInfoPop   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f694f6c4f614f56 ; Vali
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f654f744f614f64 ; date
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6e4f494f784f45 ; ExIn
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f6f4f504f6f4f66 ; foPo
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f204f204f204f70 ; p   
+    mov qword[rbx + 0x0030], rax
+    call next_console_row
+    ret
+
+RhpWaitForSuspend2:
+    ; print `Err: RhpWaitForSuspend2 ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f744f694f614f57 ; Wait
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f534f724f6f4f46 ; ForS
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f654f704f734f75 ; uspe
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f204f324f644f6e ; nd2 
+    mov qword[rbx + 0x0028], rax
+    call next_console_row
+    ret
+
+RhpWaitForGC2:
+    ; print `Err: RhpWaitForGC2  ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f744f694f614f57 ; Wait
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f474f724f6f4f46 ; ForG
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f204f204f324f43 ; C2  
+    mov qword[rbx + 0x0020], rax
+    call next_console_row
+    ret
+
+RhpReversePInvokeAttachOrTrapThread2:
+    ; print `Err: RhpReversePInvokeAttachOrTrapThread2   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f654f764f654f52 ; Reve
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f504f654f734f72 ; rseP
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f6f4f764f6e4f49 ; Invo
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f744f414f654f6b ; keAt
+    mov qword[rbx + 0x0028], rax
+    mov rax, 0x4f684f634f614f74 ; tach
+    mov qword[rbx + 0x0030], rax
+    mov rax, 0x4f724f544f724f4f ; OrTr
+    mov qword[rbx + 0x0038], rax
+    mov rax, 0x4f684f544f704f61 ; apTh
+    mov qword[rbx + 0x0040], rax
+    mov rax, 0x4f644f614f654f72 ; read
+    mov qword[rbx + 0x0048], rax
+    mov rax, 0x4f204f204f204f32 ; 2   
+    mov qword[rbx + 0x0050], rax
+    call next_console_row
+    ret
+
+RhpPublishObject:
+    ; print `Err: RhpPublishObject   ` to screen
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f704f684f524f20 ;  Rhp
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f6c4f624f754f50 ; Publ
+    mov qword[rbx + 0x0010], rax
+    mov rax, 0x4f4f4f684f734f69 ; ishO
+    mov qword[rbx + 0x0018], rax
+    mov rax, 0x4f634f654f6a4f62 ; bjec
+    mov qword[rbx + 0x0020], rax
+    mov rax, 0x4f204f204f204f74 ; t   
+    mov qword[rbx + 0x0028], rax
     call next_console_row
     ret
 
