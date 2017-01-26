@@ -66,7 +66,6 @@ global RhpGetCurrentThreadStackTrace
 global RhpGetDispatchCellInfo
 global RhpGetDispatchMap
 global RhpGetGcTotalMemory
-global RhpGetModuleSection
 global RhpGetNextFinalizableObject
 global RhpGetNextFinalizerInitCallback
 global RhpGetRequestedExceptionEvents
@@ -99,7 +98,6 @@ global RhpGetCastableObjectDispatchHelper_TailCalled
 global RhpSetTLSDispatchCell
 global RhpGetTailCallTLSDispatchCell
 global RhpGetThunkSize
-global RhpCreateTypeManager
 global RhpAcquireThunkPoolLock
 global RhpReleaseThunkPoolLock
 global RhpGetThunkStubsBlockAddress
@@ -133,16 +131,16 @@ global LoadStringW
 global FormatMessageW
 global tan
 global FreeLibrary
-global RhpGcAlloc
 global RhpValidateExInfoPop
 global RhpWaitForSuspend2
 global RhpWaitForGC2
 global RhpReversePInvokeAttachOrTrapThread2
 global RhpPublishObject
+global Halted
 
 section .data
 console_row:  db 0
-errors:  db 0
+errors:      db 0
 
 section .text
 bits 64
@@ -166,8 +164,14 @@ next_console_row:
 .quit:
     jmp .quit
 
+halt:
+.quit:
+    jmp .quit
+
 __fail_fast:
     ; print `Err: __fail_fast` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -178,10 +182,14 @@ __fail_fast:
     mov rax, 0x4f744f734f614f66 ; fast
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 __not_yet_implemented:
     ; print `Err: __not_yet_implemented  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -198,10 +206,14 @@ __not_yet_implemented:
     mov rax, 0x4f204f204f644f65 ; ed  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 _ecvt_s:
     ; print `Err: _ecvt_s` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -210,10 +222,14 @@ _ecvt_s:
     mov rax, 0x4f734f5f4f744f76 ; vt_s
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CloseHandle:
     ; print `Err: CloseHandle` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -224,10 +240,14 @@ CloseHandle:
     mov rax, 0x4f654f6c4f644f6e ; ndle
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CoCreateGuid:
     ; print `Err: CoCreateGuid   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -240,10 +260,14 @@ CoCreateGuid:
     mov rax, 0x4f204f204f204f64 ; d   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CoGetApartmentType:
     ; print `Err: CoGetApartmentType ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -258,10 +282,14 @@ CoGetApartmentType:
     mov rax, 0x4f204f654f704f79 ; ype 
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CompareStringEx:
     ; print `Err: CompareStringEx` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -274,10 +302,14 @@ CompareStringEx:
     mov rax, 0x4f784f454f674f6e ; ngEx
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CompareStringOrdinal:
     ; print `Err: CompareStringOrdinal   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -294,10 +326,14 @@ CompareStringOrdinal:
     mov rax, 0x4f204f204f204f6c ; l   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 CreateEventExW:
     ; print `Err: CreateEventExW ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -310,10 +346,14 @@ CreateEventExW:
     mov rax, 0x4f204f574f784f45 ; ExW 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 EnumCalendarInfoExEx:
     ; print `Err: EnumCalendarInfoExEx   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -330,10 +370,14 @@ EnumCalendarInfoExEx:
     mov rax, 0x4f204f204f204f78 ; x   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 EnumTimeFormatsEx:
     ; print `Err: EnumTimeFormatsEx  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -348,10 +392,14 @@ EnumTimeFormatsEx:
     mov rax, 0x4f204f204f784f45 ; Ex  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 floor:
     ; print `Err: floor  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -360,10 +408,14 @@ floor:
     mov rax, 0x4f204f204f724f6f ; or  
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 fmod:
     ; print `Err: fmod   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -372,10 +424,14 @@ fmod:
     mov rax, 0x4f204f204f204f64 ; d   
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetCalendarInfoEx:
     ; print `Err: GetCalendarInfoEx  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -390,10 +446,14 @@ GetCalendarInfoEx:
     mov rax, 0x4f204f204f784f45 ; Ex  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetCurrentThreadId:
     ; print `Err: GetCurrentThreadId ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -408,10 +468,14 @@ GetCurrentThreadId:
     mov rax, 0x4f204f644f494f64 ; dId 
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetLastError:
     ; print `Err: GetLastError   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -424,10 +488,14 @@ GetLastError:
     mov rax, 0x4f204f204f204f72 ; r   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetLocaleInfoEx:
     ; print `Err: GetLocaleInfoEx` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -440,10 +508,14 @@ GetLocaleInfoEx:
     mov rax, 0x4f784f454f6f4f66 ; foEx
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetNativeSystemInfo:
     ; print `Err: GetNativeSystemInfo` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -458,10 +530,14 @@ GetNativeSystemInfo:
     mov rax, 0x4f6f4f664f6e4f49 ; Info
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetProcessHeap:
     ; print `Err: GetProcessHeap ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -474,10 +550,14 @@ GetProcessHeap:
     mov rax, 0x4f204f704f614f65 ; eap 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetTickCount64:
     ; print `Err: GetTickCount64 ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -490,10 +570,14 @@ GetTickCount64:
     mov rax, 0x4f204f344f364f74 ; t64 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 HeapAlloc:
     ; print `Err: HeapAlloc  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -504,10 +588,14 @@ HeapAlloc:
     mov rax, 0x4f204f204f634f6f ; oc  
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 IsDebuggerPresent:
     ; print `Err: IsDebuggerPresent  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -522,10 +610,14 @@ IsDebuggerPresent:
     mov rax, 0x4f204f204f744f6e ; nt  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 LCMapStringEx:
     ; print `Err: LCMapStringEx  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -538,10 +630,14 @@ LCMapStringEx:
     mov rax, 0x4f204f204f784f45 ; Ex  
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 memcpy:
     ; print `Err: memcpy ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -550,10 +646,14 @@ memcpy:
     mov rax, 0x4f204f794f704f63 ; cpy 
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 memmove:
     ; print `Err: memmove` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -562,10 +662,14 @@ memmove:
     mov rax, 0x4f654f764f6f4f6d ; move
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 memset:
     ; print `Err: memset ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -574,10 +678,14 @@ memset:
     mov rax, 0x4f204f744f654f73 ; set 
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 OutputDebugStringW:
     ; print `Err: OutputDebugStringW ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -592,10 +700,14 @@ OutputDebugStringW:
     mov rax, 0x4f204f574f674f6e ; ngW 
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 PalGetTickCount64:
     ; print `Err: PalGetTickCount64  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -610,10 +722,14 @@ PalGetTickCount64:
     mov rax, 0x4f204f204f344f36 ; 64  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RaiseFailFastException:
     ; print `Err: RaiseFailFastException ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -630,10 +746,14 @@ RaiseFailFastException:
     mov rax, 0x4f204f6e4f6f4f69 ; ion 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 ResolveLocaleName:
     ; print `Err: ResolveLocaleName  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -648,10 +768,14 @@ ResolveLocaleName:
     mov rax, 0x4f204f204f654f6d ; me  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhCompatibleReentrantWaitAny:
     ; print `Err: RhCompatibleReentrantWaitAny   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -672,10 +796,14 @@ RhCompatibleReentrantWaitAny:
     mov rax, 0x4f204f204f204f79 ; y   
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhFindMethodStartAddress:
     ; print `Err: RhFindMethodStartAddress   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -694,10 +822,14 @@ RhFindMethodStartAddress:
     mov rax, 0x4f204f204f204f73 ; s   
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetCodeTarget:
     ; print `Err: RhGetCodeTarget` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -710,10 +842,14 @@ RhGetCodeTarget:
     mov rax, 0x4f744f654f674f72 ; rget
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetExceptionsForCurrentThread:
     ; print `Err: RhGetExceptionsForCurrentThread` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -734,10 +870,14 @@ RhGetExceptionsForCurrentThread:
     mov rax, 0x4f644f614f654f72 ; read
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetGenericInstantiation:
     ; print `Err: RhGetGenericInstantiation  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -756,10 +896,14 @@ RhGetGenericInstantiation:
     mov rax, 0x4f204f204f6e4f6f ; on  
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetModuleFileName:
     ; print `Err: RhGetModuleFileName` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -774,10 +918,14 @@ RhGetModuleFileName:
     mov rax, 0x4f654f6d4f614f4e ; Name
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetModuleFromEEType:
     ; print `Err: RhGetModuleFromEEType  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -794,10 +942,14 @@ RhGetModuleFromEEType:
     mov rax, 0x4f204f204f654f70 ; pe  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetModuleFromPointer:
     ; print `Err: RhGetModuleFromPointer ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -814,10 +966,14 @@ RhGetModuleFromPointer:
     mov rax, 0x4f204f724f654f74 ; ter 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetThreadLocalStorageForDynamicType:
     ; print `Err: RhGetThreadLocalStorageForDynamicType  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -842,10 +998,14 @@ RhGetThreadLocalStorageForDynamicType:
     mov rax, 0x4f204f204f654f70 ; pe  
     mov qword[rbx + 0x0050], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhHandleFree:
     ; print `Err: RhHandleFree   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -858,10 +1018,14 @@ RhHandleFree:
     mov rax, 0x4f204f204f204f65 ; e   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhHandleGet:
     ; print `Err: RhHandleGet` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -872,10 +1036,14 @@ RhHandleGet:
     mov rax, 0x4f744f654f474f65 ; eGet
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhHandleGetDependent:
     ; print `Err: RhHandleGetDependent   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -892,10 +1060,14 @@ RhHandleGetDependent:
     mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhHandleSet:
     ; print `Err: RhHandleSet` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -906,10 +1078,14 @@ RhHandleSet:
     mov rax, 0x4f744f654f534f65 ; eSet
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpAcquireCastCacheLock:
     ; print `Err: RhpAcquireCastCacheLock` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -926,10 +1102,14 @@ RhpAcquireCastCacheLock:
     mov rax, 0x4f6b4f634f6f4f4c ; Lock
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpArrayCopy:
     ; print `Err: RhpArrayCopy   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -942,10 +1122,14 @@ RhpArrayCopy:
     mov rax, 0x4f204f204f204f79 ; y   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpAssignRef:
     ; print `Err: RhpAssignRef   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -958,10 +1142,14 @@ RhpAssignRef:
     mov rax, 0x4f204f204f204f66 ; f   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpBox:
     ; print `Err: RhpBox ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -970,10 +1158,14 @@ RhpBox:
     mov rax, 0x4f204f784f6f4f42 ; Box 
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpByRefAssignRef:
     ; print `Err: RhpByRefAssignRef  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -988,10 +1180,14 @@ RhpByRefAssignRef:
     mov rax, 0x4f204f204f664f65 ; ef  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCallCatchFunclet:
     ; print `Err: RhpCallCatchFunclet` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1006,10 +1202,14 @@ RhpCallCatchFunclet:
     mov rax, 0x4f744f654f6c4f63 ; clet
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCallFilterFunclet:
     ; print `Err: RhpCallFilterFunclet   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1026,10 +1226,14 @@ RhpCallFilterFunclet:
     mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCallFinallyFunclet:
     ; print `Err: RhpCallFinallyFunclet  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1046,10 +1250,14 @@ RhpCallFinallyFunclet:
     mov rax, 0x4f204f204f744f65 ; et  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCheckedAssignRef:
     ; print `Err: RhpCheckedAssignRef` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1064,10 +1272,14 @@ RhpCheckedAssignRef:
     mov rax, 0x4f664f654f524f6e ; nRef
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCheckedLockCmpXchg:
     ; print `Err: RhpCheckedLockCmpXchg  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1084,10 +1296,14 @@ RhpCheckedLockCmpXchg:
     mov rax, 0x4f204f204f674f68 ; hg  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCheckedXchg:
     ; print `Err: RhpCheckedXchg ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1100,10 +1316,14 @@ RhpCheckedXchg:
     mov rax, 0x4f204f674f684f63 ; chg 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCollect:
     ; print `Err: RhpCollect ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1114,10 +1334,14 @@ RhpCollect:
     mov rax, 0x4f204f744f634f65 ; ect 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCopyContextFromExInfo:
     ; print `Err: RhpCopyContextFromExInfo   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1136,10 +1360,14 @@ RhpCopyContextFromExInfo:
     mov rax, 0x4f204f204f204f6f ; o   
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCopyObjectContents:
     ; print `Err: RhpCopyObjectContents  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1156,10 +1384,14 @@ RhpCopyObjectContents:
     mov rax, 0x4f204f204f734f74 ; ts  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpCreateModuleManager:
     ; print `Err: RhpCreateModuleManager ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1176,10 +1408,14 @@ RhpCreateModuleManager:
     mov rax, 0x4f204f724f654f67 ; ger 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpDbl2ULng:
     ; print `Err: RhpDbl2ULng` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1190,10 +1426,14 @@ RhpDbl2ULng:
     mov rax, 0x4f674f6e4f4c4f55 ; ULng
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpEHEnumInitFromStackFrameIterator:
     ; print `Err: RhpEHEnumInitFromStackFrameIterator` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1216,10 +1456,14 @@ RhpEHEnumInitFromStackFrameIterator:
     mov rax, 0x4f724f6f4f744f61 ; ator
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpEHEnumNext:
     ; print `Err: RhpEHEnumNext  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1232,10 +1476,14 @@ RhpEHEnumNext:
     mov rax, 0x4f204f204f744f78 ; xt  
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpEtwExceptionThrown:
     ; print `Err: RhpEtwExceptionThrown  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1252,10 +1500,14 @@ RhpEtwExceptionThrown:
     mov rax, 0x4f204f204f6e4f77 ; wn  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpFallbackFailFast:
     ; print `Err: RhpFallbackFailFast` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1270,10 +1522,14 @@ RhpFallbackFailFast:
     mov rax, 0x4f744f734f614f46 ; Fast
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetClasslibFunction:
     ; print `Err: RhpGetClasslibFunction ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1290,10 +1546,14 @@ RhpGetClasslibFunction:
     mov rax, 0x4f204f6e4f6f4f69 ; ion 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetCurrentThreadStackTrace:
     ; print `Err: RhpGetCurrentThreadStackTrace  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1314,10 +1574,14 @@ RhpGetCurrentThreadStackTrace:
     mov rax, 0x4f204f204f654f63 ; ce  
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetDispatchCellInfo:
     ; print `Err: RhpGetDispatchCellInfo ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1334,10 +1598,14 @@ RhpGetDispatchCellInfo:
     mov rax, 0x4f204f6f4f664f6e ; nfo 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetDispatchMap:
     ; print `Err: RhpGetDispatchMap  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1352,10 +1620,14 @@ RhpGetDispatchMap:
     mov rax, 0x4f204f204f704f61 ; ap  
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetGcTotalMemory:
     ; print `Err: RhpGetGcTotalMemory` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1370,28 +1642,14 @@ RhpGetGcTotalMemory:
     mov rax, 0x4f794f724f6f4f6d ; mory
     mov qword[rbx + 0x0028], rax
     call next_console_row
-    ret
-
-RhpGetModuleSection:
-    ; print `Err: RhpGetModuleSection` to screen
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f4d4f744f654f47 ; GetM
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f6c4f754f644f6f ; odul
-    mov qword[rbx + 0x0018], rax
-    mov rax, 0x4f634f654f534f65 ; eSec
-    mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f6e4f6f4f694f74 ; tion
-    mov qword[rbx + 0x0028], rax
-    call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetNextFinalizableObject:
     ; print `Err: RhpGetNextFinalizableObject` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1410,10 +1668,14 @@ RhpGetNextFinalizableObject:
     mov rax, 0x4f744f634f654f6a ; ject
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetNextFinalizerInitCallback:
     ; print `Err: RhpGetNextFinalizerInitCallback` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1434,10 +1696,14 @@ RhpGetNextFinalizerInitCallback:
     mov rax, 0x4f6b4f634f614f62 ; back
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetRequestedExceptionEvents:
     ; print `Err: RhpGetRequestedExceptionEvents ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1458,10 +1724,14 @@ RhpGetRequestedExceptionEvents:
     mov rax, 0x4f204f734f744f6e ; nts 
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpHandleAlloc:
     ; print `Err: RhpHandleAlloc ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1474,10 +1744,14 @@ RhpHandleAlloc:
     mov rax, 0x4f204f634f6f4f6c ; loc 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpHandleAllocDependent:
     ; print `Err: RhpHandleAllocDependent` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1494,10 +1768,14 @@ RhpHandleAllocDependent:
     mov rax, 0x4f744f6e4f654f64 ; dent
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpInitialDynamicInterfaceDispatch:
     ; print `Err: RhpInitialDynamicInterfaceDispatch ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1520,10 +1798,14 @@ RhpInitialDynamicInterfaceDispatch:
     mov rax, 0x4f204f684f634f74 ; tch 
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpPInvoke:
     ; print `Err: RhpPInvoke ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1534,10 +1816,14 @@ RhpPInvoke:
     mov rax, 0x4f204f654f6b4f6f ; oke 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpPInvokeReturn:
     ; print `Err: RhpPInvokeReturn   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1552,10 +1838,14 @@ RhpPInvokeReturn:
     mov rax, 0x4f204f204f204f6e ; n   
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpReleaseCastCacheLock:
     ; print `Err: RhpReleaseCastCacheLock` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1572,10 +1862,14 @@ RhpReleaseCastCacheLock:
     mov rax, 0x4f6b4f634f6f4f4c ; Lock
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpReversePInvoke2:
     ; print `Err: RhpReversePInvoke2 ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1587,13 +1881,17 @@ RhpReversePInvoke2:
     mov qword[rbx + 0x0018], rax
     mov rax, 0x4f6f4f764f6e4f49 ; Invo
     mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f204f324f654f6b ; ke2
+    mov rax, 0x4f204f324f654f6b ; ke2 
     mov qword[rbx + 0x0028], rax
     call next_console_row_ignore
+    pop rbx
+    pop rax
     ret
 
 RhpReversePInvokeReturn2:
     ; print `Err: RhpReversePInvokeReturn2   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1612,10 +1910,14 @@ RhpReversePInvokeReturn2:
     mov rax, 0x4f204f204f204f32 ; 2   
     mov qword[rbx + 0x0038], rax
     call next_console_row_ignore
+    pop rbx
+    pop rax
     ret
 
 RhpSearchDispatchCellCache:
     ; print `Err: RhpSearchDispatchCellCache ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1634,10 +1936,14 @@ RhpSearchDispatchCellCache:
     mov rax, 0x4f204f654f684f63 ; che 
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSendExceptionEventToDebugger:
     ; print `Err: RhpSendExceptionEventToDebugger` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1658,10 +1964,14 @@ RhpSendExceptionEventToDebugger:
     mov rax, 0x4f724f654f674f67 ; gger
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSetThreadDoNotTriggerGC:
     ; print `Err: RhpSetThreadDoNotTriggerGC ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1680,10 +1990,14 @@ RhpSetThreadDoNotTriggerGC:
     mov rax, 0x4f204f434f474f72 ; rGC 
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSfiInit:
     ; print `Err: RhpSfiInit ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1694,10 +2008,14 @@ RhpSfiInit:
     mov rax, 0x4f204f744f694f6e ; nit 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSfiNext:
     ; print `Err: RhpSfiNext ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1708,10 +2026,14 @@ RhpSfiNext:
     mov rax, 0x4f204f744f784f65 ; ext 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSignalFinalizationComplete:
     ; print `Err: RhpSignalFinalizationComplete  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1732,10 +2054,14 @@ RhpSignalFinalizationComplete:
     mov rax, 0x4f204f204f654f74 ; te  
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpThrowEx:
     ; print `Err: RhpThrowEx ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1746,10 +2072,14 @@ RhpThrowEx:
     mov rax, 0x4f204f784f454f77 ; wEx 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpUpdateDispatchCellCache:
     ; print `Err: RhpUpdateDispatchCellCache ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1768,10 +2098,14 @@ RhpUpdateDispatchCellCache:
     mov rax, 0x4f204f654f684f63 ; che 
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpValidateExInfoStack:
     ; print `Err: RhpValidateExInfoStack ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1785,13 +2119,17 @@ RhpValidateExInfoStack:
     mov qword[rbx + 0x0020], rax
     mov rax, 0x4f744f534f6f4f66 ; foSt
     mov qword[rbx + 0x0028], rax
-    mov rax, 0x4f204f6b4f634f61 ; ack
+    mov rax, 0x4f204f6b4f634f61 ; ack 
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpWaitForFinalizerRequest:
     ; print `Err: RhpWaitForFinalizerRequest ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1810,10 +2148,14 @@ RhpWaitForFinalizerRequest:
     mov rax, 0x4f204f744f734f65 ; est 
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhSetErrorInfoBuffer:
     ; print `Err: RhSetErrorInfoBuffer   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1830,10 +2172,14 @@ RhSetErrorInfoBuffer:
     mov rax, 0x4f204f204f204f72 ; r   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhSpinWait:
     ; print `Err: RhSpinWait ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1844,10 +2190,14 @@ RhSpinWait:
     mov rax, 0x4f204f744f694f61 ; ait 
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhSuppressFinalize:
     ; print `Err: RhSuppressFinalize ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1862,10 +2212,14 @@ RhSuppressFinalize:
     mov rax, 0x4f204f654f7a4f69 ; ize 
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhUnbox:
     ; print `Err: RhUnbox` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1874,10 +2228,14 @@ RhUnbox:
     mov rax, 0x4f784f6f4f624f6e ; nbox
     mov qword[rbx + 0x0010], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 SetEvent:
     ; print `Err: SetEvent   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1888,10 +2246,14 @@ SetEvent:
     mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 WaitForMultipleObjectsEx:
     ; print `Err: WaitForMultipleObjectsEx   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1910,10 +2272,14 @@ WaitForMultipleObjectsEx:
     mov rax, 0x4f204f204f204f78 ; x   
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetCastableObjectDispatchHelper:
     ; print `Err: RhpGetCastableObjectDispatchHelper ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1936,10 +2302,14 @@ RhpGetCastableObjectDispatchHelper:
     mov rax, 0x4f204f724f654f70 ; per 
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetCastableObjectDispatchHelper_TailCalled:
     ; print `Err: RhpGetCastableObjectDispatchHelper_TailCalled  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1968,10 +2338,14 @@ RhpGetCastableObjectDispatchHelper_TailCalled:
     mov rax, 0x4f204f204f644f65 ; ed  
     mov qword[rbx + 0x0060], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpSetTLSDispatchCell:
     ; print `Err: RhpSetTLSDispatchCell  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -1988,10 +2362,14 @@ RhpSetTLSDispatchCell:
     mov rax, 0x4f204f204f6c4f6c ; ll  
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetTailCallTLSDispatchCell:
     ; print `Err: RhpGetTailCallTLSDispatchCell  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2012,10 +2390,14 @@ RhpGetTailCallTLSDispatchCell:
     mov rax, 0x4f204f204f6c4f6c ; ll  
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetThunkSize:
     ; print `Err: RhpGetThunkSize` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2028,30 +2410,14 @@ RhpGetThunkSize:
     mov rax, 0x4f654f7a4f694f53 ; Size
     mov qword[rbx + 0x0020], rax
     call next_console_row
-    ret
-
-RhpCreateTypeManager:
-    ; print `Err: RhpCreateTypeManager   ` to screen
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f614f654f724f43 ; Crea
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f794f544f654f74 ; teTy
-    mov qword[rbx + 0x0018], rax
-    mov rax, 0x4f614f4d4f654f70 ; peMa
-    mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f654f674f614f6e ; nage
-    mov qword[rbx + 0x0028], rax
-    mov rax, 0x4f204f204f204f72 ; r   
-    mov qword[rbx + 0x0030], rax
-    call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpAcquireThunkPoolLock:
     ; print `Err: RhpAcquireThunkPoolLock` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2068,10 +2434,14 @@ RhpAcquireThunkPoolLock:
     mov rax, 0x4f6b4f634f6f4f4c ; Lock
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpReleaseThunkPoolLock:
     ; print `Err: RhpReleaseThunkPoolLock` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2088,10 +2458,14 @@ RhpReleaseThunkPoolLock:
     mov rax, 0x4f6b4f634f6f4f4c ; Lock
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetThunkStubsBlockAddress:
     ; print `Err: RhpGetThunkStubsBlockAddress   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2112,10 +2486,14 @@ RhpGetThunkStubsBlockAddress:
     mov rax, 0x4f204f204f204f73 ; s   
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetCastableObjectDispatch_CommonStub:
     ; print `Err: RhpGetCastableObjectDispatch_CommonStub` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2140,10 +2518,14 @@ RhpGetCastableObjectDispatch_CommonStub:
     mov rax, 0x4f624f754f744f53 ; Stub
     mov qword[rbx + 0x0050], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetThunkDataBlockAddress:
     ; print `Err: RhpGetThunkDataBlockAddress` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2162,10 +2544,14 @@ RhpGetThunkDataBlockAddress:
     mov rax, 0x4f734f734f654f72 ; ress
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpRegisterFrozenSegment:
     ; print `Err: RhpRegisterFrozenSegment   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2184,10 +2570,14 @@ RhpRegisterFrozenSegment:
     mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0038], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetNumThunksPerBlock:
     ; print `Err: RhpGetNumThunksPerBlock` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2204,10 +2594,14 @@ RhpGetNumThunksPerBlock:
     mov rax, 0x4f6b4f634f6f4f6c ; lock
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetNumThunkBlocksPerMapping:
     ; print `Err: RhpGetNumThunkBlocksPerMapping ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2228,10 +2622,14 @@ RhpGetNumThunkBlocksPerMapping:
     mov rax, 0x4f204f674f6e4f69 ; ing 
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhAllocateThunksMapping:
     ; print `Err: RhAllocateThunksMapping` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2248,10 +2646,14 @@ RhAllocateThunksMapping:
     mov rax, 0x4f674f6e4f694f70 ; ping
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpGetNextThunkStubsBlockAddress:
     ; print `Err: RhpGetNextThunkStubsBlockAddress   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2274,10 +2676,14 @@ RhpGetNextThunkStubsBlockAddress:
     mov rax, 0x4f204f204f204f73 ; s   
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhGetThreadStaticStorageForModule:
     ; print `Err: RhGetThreadStaticStorageForModule  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2300,10 +2706,14 @@ RhGetThreadStaticStorageForModule:
     mov rax, 0x4f204f204f654f6c ; le  
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhSetThreadStaticStorageForModule:
     ; print `Err: RhSetThreadStaticStorageForModule  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2326,10 +2736,14 @@ RhSetThreadStaticStorageForModule:
     mov rax, 0x4f204f204f654f6c ; le  
     mov qword[rbx + 0x0048], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhDebugBreak:
     ; print `Err: RhDebugBreak   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2342,10 +2756,14 @@ RhDebugBreak:
     mov rax, 0x4f204f204f204f6b ; k   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 SetLastError:
     ; print `Err: SetLastError   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2358,10 +2776,14 @@ SetLastError:
     mov rax, 0x4f204f204f204f72 ; r   
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhReRegisterForFinalize:
     ; print `Err: RhReRegisterForFinalize` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2378,20 +2800,28 @@ RhReRegisterForFinalize:
     mov rax, 0x4f654f7a4f694f6c ; lize
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 pow:
     ; print `Err: pow` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
     mov rax, 0x4f774f6f4f704f20 ;  pow
     mov qword[rbx + 0x0008], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 FindNLSStringEx:
     ; print `Err: FindNLSStringEx` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2404,10 +2834,14 @@ FindNLSStringEx:
     mov rax, 0x4f784f454f674f6e ; ngEx
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetSystemTimeAsFileTime:
     ; print `Err: GetSystemTimeAsFileTime` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2424,10 +2858,14 @@ GetSystemTimeAsFileTime:
     mov rax, 0x4f654f6d4f694f54 ; Time
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetDynamicTimeZoneInformation:
     ; print `Err: GetDynamicTimeZoneInformation  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2448,10 +2886,14 @@ GetDynamicTimeZoneInformation:
     mov rax, 0x4f204f204f6e4f6f ; on  
     mov qword[rbx + 0x0040], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RegQueryValueExW:
     ; print `Err: RegQueryValueExW   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2466,10 +2908,14 @@ RegQueryValueExW:
     mov rax, 0x4f204f204f204f57 ; W   
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RegCloseKey:
     ; print `Err: RegCloseKey` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2480,10 +2926,14 @@ RegCloseKey:
     mov rax, 0x4f794f654f4b4f65 ; eKey
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RegEnumValueW:
     ; print `Err: RegEnumValueW  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2496,10 +2946,14 @@ RegEnumValueW:
     mov rax, 0x4f204f204f574f65 ; eW  
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RegEnumKeyExW:
     ; print `Err: RegEnumKeyExW  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2512,10 +2966,14 @@ RegEnumKeyExW:
     mov rax, 0x4f204f204f574f78 ; xW  
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RegQueryInfoKeyW:
     ; print `Err: RegQueryInfoKeyW   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2530,30 +2988,42 @@ RegQueryInfoKeyW:
     mov rax, 0x4f204f204f204f57 ; W   
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 cos:
     ; print `Err: cos` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
     mov rax, 0x4f734f6f4f634f20 ;  cos
     mov qword[rbx + 0x0008], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 sin:
     ; print `Err: sin` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
     mov rax, 0x4f6e4f694f734f20 ;  sin
     mov qword[rbx + 0x0008], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetSystemDirectoryW:
     ; print `Err: GetSystemDirectoryW` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2568,10 +3038,14 @@ GetSystemDirectoryW:
     mov rax, 0x4f574f794f724f6f ; oryW
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 GetFileMUIPath:
     ; print `Err: GetFileMUIPath ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2584,10 +3058,14 @@ GetFileMUIPath:
     mov rax, 0x4f204f684f744f61 ; ath 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 LoadLibraryExW:
     ; print `Err: LoadLibraryExW ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2600,10 +3078,14 @@ LoadLibraryExW:
     mov rax, 0x4f204f574f784f45 ; ExW 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 LoadStringW:
     ; print `Err: LoadStringW` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2614,10 +3096,14 @@ LoadStringW:
     mov rax, 0x4f574f674f6e4f69 ; ingW
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 FormatMessageW:
     ; print `Err: FormatMessageW ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2630,20 +3116,28 @@ FormatMessageW:
     mov rax, 0x4f204f574f654f67 ; geW 
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 tan:
     ; print `Err: tan` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
     mov rax, 0x4f6e4f614f744f20 ;  tan
     mov qword[rbx + 0x0008], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 FreeLibrary:
     ; print `Err: FreeLibrary` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2654,10 +3148,14 @@ FreeLibrary:
     mov rax, 0x4f794f724f614f72 ; rary
     mov qword[rbx + 0x0018], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpValidateExInfoPop:
     ; print `Err: RhpValidateExInfoPop   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2674,10 +3172,14 @@ RhpValidateExInfoPop:
     mov rax, 0x4f204f204f204f70 ; p   
     mov qword[rbx + 0x0030], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpWaitForSuspend2:
     ; print `Err: RhpWaitForSuspend2 ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2692,10 +3194,14 @@ RhpWaitForSuspend2:
     mov rax, 0x4f204f324f644f6e ; nd2 
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpWaitForGC2:
     ; print `Err: RhpWaitForGC2  ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2708,10 +3214,14 @@ RhpWaitForGC2:
     mov rax, 0x4f204f204f324f43 ; C2  
     mov qword[rbx + 0x0020], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpReversePInvokeAttachOrTrapThread2:
     ; print `Err: RhpReversePInvokeAttachOrTrapThread2   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2736,10 +3246,14 @@ RhpReversePInvokeAttachOrTrapThread2:
     mov rax, 0x4f204f204f204f32 ; 2   
     mov qword[rbx + 0x0050], rax
     call next_console_row
+    pop rbx
+    pop rax
     ret
 
 RhpPublishObject:
     ; print `Err: RhpPublishObject   ` to screen
+    push rax
+    push rbx
     call set_cursor
     mov rax, 0x4f3a4f724f724f45 ; Err:
     mov qword[rbx + 0x0000], rax
@@ -2754,5 +3268,23 @@ RhpPublishObject:
     mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0028], rax
     call next_console_row
+    pop rbx
+    pop rax
+    ret
+
+Halted:
+    ; print `Err: Halted ` to screen
+    push rax
+    push rbx
+    call set_cursor
+    mov rax, 0x4f3a4f724f724f45 ; Err:
+    mov qword[rbx + 0x0000], rax
+    mov rax, 0x4f6c4f614f484f20 ;  Hal
+    mov qword[rbx + 0x0008], rax
+    mov rax, 0x4f204f644f654f74 ; ted
+    mov qword[rbx + 0x0010], rax
+    call next_console_row
+    pop rbx
+    pop rax
     ret
 

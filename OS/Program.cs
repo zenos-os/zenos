@@ -16,7 +16,7 @@ namespace OS
         public static extern void InitializeModules(IntPtr modules, int count);
     }
 
-    class Program
+    public static class Program
     {
 
         static void Wait(int ms)
@@ -35,13 +35,20 @@ namespace OS
                 x += i;
             }
         }
-        
-        static void Main()
+
+        public static void Main()
+        {
+            // fake entry point for now
+            EntryPoint(0);
+        }
+
+        static unsafe void EntryPoint(long heapBase)
         {
             // nice to haves:
             // static ctors
             // string support
             // new objects?
+            Memory.Init(heapBase);
 
             Screen.Init();
             Screen.Clear();
@@ -52,6 +59,7 @@ namespace OS
 
             DoInitModules();
             Wait(500);
+            Screen.Clear();
             Screen.WriteLine("Lives");
             Wait(500);
             while (true) ;

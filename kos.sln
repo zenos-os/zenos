@@ -5,6 +5,13 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OS", "OS\OS.csproj", "{E34A35C0-60A5-4936-961B-AD2FDB52B67A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F38C8AD8-0A0B-4965-9741-19A6D487C0DA}"
+	ProjectSection(SolutionItems) = preProject
+		build.cmd = build.cmd
+		README.md = README.md
+		run.cmd = run.cmd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

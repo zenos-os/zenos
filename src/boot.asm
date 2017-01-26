@@ -174,9 +174,6 @@ long_mode_start:
     ;mov	edi, 1
     ;call __managed__Main
 
-    extern init_heap
-    call init_heap
-
     extern start_dotnet
     call start_dotnet
 

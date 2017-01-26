@@ -7,5 +7,7 @@ start_dotnet:
   extern __modules_a
   extern __modules_z
 
-  extern OS_OS_Program__Main
-  call OS_OS_Program__Main
+  extern stack_top
+  mov rcx, stack_top
+  extern OS_OS_Program__EntryPoint
+  call OS_OS_Program__EntryPoint

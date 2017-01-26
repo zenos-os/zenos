@@ -5,7 +5,6 @@ obj\red_hawk.obj
 obj\globals.obj
 obj\OS.obj
 obj\modules.obj
-obj\memory.obj
 obj\dotnet.obj
 obj\load_end_addr.obj
 /filealign:0x1000

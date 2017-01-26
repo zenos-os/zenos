@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 
 namespace OS
@@ -30,5 +29,18 @@ namespace OS
             Screen.Write(b);
             Screen.Write(c);
         }
+    }
+
+    public struct ReadyToRunHeader
+    {
+        public uint Signature;      // ReadyToRunHeaderConstants.Signature
+        public ushort MajorVersion;
+        public ushort MinorVersion;
+
+        public uint Flags;
+
+        public ushort NumberOfSections;
+        public byte EntrySize;
+        public byte EntryType;
     }
 }

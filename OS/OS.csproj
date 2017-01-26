@@ -34,8 +34,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>OS.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorCode.cs" />
+    <Compile Include="Memory.cs" />
+    <Compile Include="MinimalRuntime.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="ConsoleColor.cs" />
     <Compile Include="Program.cs" />

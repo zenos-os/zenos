@@ -37,7 +37,6 @@ goto:eof
   call:compile_asm load_end_addr
   call:compile_asm modules
   call:compile_asm dotnet
-  call:compile_asm memory
   call:compile_masm AllocFast
 
   echo :: Building KOS ::
