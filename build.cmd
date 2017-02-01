@@ -32,7 +32,6 @@ goto:eof
   echo :: Building assembly files ::
   call:compile_asm boot
   call:compile_asm multiboot_header
-  call:compile_asm red_hawk
   call:compile_asm globals
   call:compile_asm load_end_addr
   call:compile_asm modules

@@ -1,14 +1,12 @@
 using System.Runtime;
-using System.Runtime.InteropServices;
 
-namespace OS
+namespace OS.Runtime
 {
-    public static class RedHawk {
-
+    public static partial class RedHawk {
+        
         public static void SetError() {
           Screen.ForegroundColor = ConsoleColor.White;
           Screen.BackgroundColor = ConsoleColor.Red;
-          Screen.Row += 1;
         }
 
         [RuntimeExport("Panic")]
@@ -21,14 +19,12 @@ namespace OS
             while (true) ;
         }
 
-        private static void DisplayError(int a, char b, char c)
+        private static void DisplayError(string message)
         {
             SetError();
 
             Screen.Write("Err: ");
-            Screen.Write(a);
-            Screen.Write(b);
-            Screen.Write(c);
+            Screen.WriteLine(message);
         }
     }
 }

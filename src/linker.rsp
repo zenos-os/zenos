@@ -1,7 +1,6 @@
 obj\multiboot_header.obj
 obj\boot.obj
 obj\AllocFast.obj
-obj\red_hawk.obj
 obj\globals.obj
 obj\OS.obj
 obj\modules.obj
