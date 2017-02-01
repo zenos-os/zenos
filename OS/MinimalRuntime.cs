@@ -1,5 +1,7 @@
 using System;
+using System.Runtime;
 using System.Runtime.InteropServices;
+using OS.Runtime;
 
 namespace OS
 {
@@ -37,92 +39,26 @@ namespace OS
         }
 
         //void* RhpGcAlloc(EEType *pEEType, UInt32 uFlags, UIntNative cbSize, void * pTransitionFrame)
-        [NativeCallable(EntryPoint = "RhpGcAlloc")]
+        //[NativeCallable(EntryPoint = "RhpGcAlloc")]
+        [RuntimeExport("RhpGcAlloc")]
         public static void* RhpGcAlloc(void* pEEType, uint uFlags, long cbSize, void* pTransitionFrame)
         {
             return Memory.Alloc(cbSize);
         }
-        
-    }
 
-    public enum ReadyToRunSectionType : int
-    {
-        StringTable = 200,
-        GCStaticRegion = 201,
-        ThreadStaticRegion = 202,
-        InterfaceDispatchTable = 203,
-        TypeManagerIndirection = 204,
-        EagerCctor = 205,
-
-        // Sections 300 - 399 are reserved for RhFindBlob backwards compatibility
-        ReadonlyBlobRegionStart = 300,
-        ReadonlyBlobRegionEnd = 399,
-    }
-
-    public enum ModuleInfoFlags : int
-    {
-        HasEndPointer = 0x1,
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct TypeManager
-    {
-        private ReadyToRunHeader* m_pHeader;
-        private DispatchMap** m_pDispatchMapTable;
-
-        public static TypeManager* New(ReadyToRunHeader* p)
+        [RuntimeExport("RhpRegisterFrozenSegment")]
+        internal static bool RhpRegisterFrozenSegment(IntPtr pSegmentStart, int length)
         {
-            var tm = (TypeManager*)Memory.Alloc(sizeof(TypeManager));
-            tm->m_pHeader = p;
-            tm->m_pDispatchMapTable = null;
-
-            return tm;
+            return RedhawkGCInterface.RhpRegisterFrozenSegment(pSegmentStart, length);
         }
 
-        public static void* GetModuleSection(TypeManager* pModule, ReadyToRunSectionType sectionId, int* length)
-        {
-            ModuleInfoRow* pModuleInfoRows = (ModuleInfoRow*)(pModule->m_pHeader + 1);
-
-            //// TODO: Binary search
-            for (int i = 0; i < pModule->m_pHeader->NumberOfSections; i++)
-            {
-                ModuleInfoRow* pCurrent = pModuleInfoRows + i;
-                if ((int)sectionId == pCurrent->SectionId)
-                {
-                    *length = ModuleInfoRow.GetLength(pCurrent);
-                    return pCurrent->Start;
-                }
-            }
-
-            *length = 0;
-            return null;
-        }
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public unsafe struct ModuleInfoRow
+    class RedhawkGCInterface
     {
-        public int SectionId;
-        public int Flags;
-        public void* Start;
-        public void* End;
-
-        public static int GetLength(ModuleInfoRow* @this)
+        public static /*GcSegmentHandle*/ bool RhpRegisterFrozenSegment(IntPtr pSegmentStart, int length)
         {
-            if (HasEndPointer(@this))
-            {
-                return (byte)@this->End - (byte)@this->Start;
-            }
-
-            return sizeof(void*);
+            return false;
         }
-
-        public static bool HasEndPointer(ModuleInfoRow* @this)
-        {
-            return (@this->Flags & (int)ModuleInfoFlags.HasEndPointer) == (int)ModuleInfoFlags.HasEndPointer;
-        }
-    };
-
-    [StructLayout(LayoutKind.Sequential)]
-    struct DispatchMap { }
+    }
 }

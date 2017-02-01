@@ -103,7 +103,6 @@ global RhpReleaseThunkPoolLock
 global RhpGetThunkStubsBlockAddress
 global RhpGetCastableObjectDispatch_CommonStub
 global RhpGetThunkDataBlockAddress
-global RhpRegisterFrozenSegment
 global RhpGetNumThunksPerBlock
 global RhpGetNumThunkBlocksPerMapping
 global RhAllocateThunksMapping
@@ -2542,32 +2541,6 @@ RhpGetThunkDataBlockAddress:
     mov rax, 0x4f644f644f414f6b ; kAdd
     mov qword[rbx + 0x0030], rax
     mov rax, 0x4f734f734f654f72 ; ress
-    mov qword[rbx + 0x0038], rax
-    call next_console_row
-    pop rbx
-    pop rax
-    ret
-
-RhpRegisterFrozenSegment:
-    ; print `Err: RhpRegisterFrozenSegment   ` to screen
-    push rax
-    push rbx
-    call set_cursor
-    mov rax, 0x4f3a4f724f724f45 ; Err:
-    mov qword[rbx + 0x0000], rax
-    mov rax, 0x4f704f684f524f20 ;  Rhp
-    mov qword[rbx + 0x0008], rax
-    mov rax, 0x4f694f674f654f52 ; Regi
-    mov qword[rbx + 0x0010], rax
-    mov rax, 0x4f724f654f744f73 ; ster
-    mov qword[rbx + 0x0018], rax
-    mov rax, 0x4f7a4f6f4f724f46 ; Froz
-    mov qword[rbx + 0x0020], rax
-    mov rax, 0x4f654f534f6e4f65 ; enSe
-    mov qword[rbx + 0x0028], rax
-    mov rax, 0x4f6e4f654f6d4f67 ; gmen
-    mov qword[rbx + 0x0030], rax
-    mov rax, 0x4f204f204f204f74 ; t   
     mov qword[rbx + 0x0038], rax
     call next_console_row
     pop rbx

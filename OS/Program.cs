@@ -38,7 +38,7 @@ namespace OS
 
         public static void Main()
         {
-            // fake entry point for now
+            // fake entry point for now or the optimizer will remove it
             EntryPoint(0);
         }
 
@@ -67,6 +67,7 @@ namespace OS
 
         static void DoInitModules()
         {
+            //TODO initialize this on startup with real values
             InitializeModules(new IntPtr(0x017a000), 1);
         }
     }

@@ -28,4 +28,15 @@ this is all related to _tls_index and Thread Local Storage
 * http://www.nynaeve.net/?p=186
 
 
+InitializeModules
+InitializeGlobalTablesForModule
+InitializeStatics
+RhNewObject
+disassemble 0x112ae0,+94
+
 Looks like we are at least getting to InitializeStatics but there are some issues where we are writing to the screen when we shouldnt be
+
+
+GDB notes:
+  dissassemble a method:
+    disassemble 0x112ae0,+100
