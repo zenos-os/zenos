@@ -10,19 +10,19 @@ namespace OS.Runtime
         public void* Start;
         public void* End;
 
-        public static int GetLength(ModuleInfoRow* @this)
+        public int Length
         {
-            if (HasEndPointer(@this))
+            get
             {
-                return (int)((long)@this->End - (long)@this->Start);
+                if (HasEndPointer)
+                {
+                    return (int) ((long) End - (long) Start);
+                }
+
+                return sizeof(void*);
             }
-
-            return sizeof(void*);
         }
 
-        public static bool HasEndPointer(ModuleInfoRow* @this)
-        {
-            return (@this->Flags & (int)ModuleInfoFlags.HasEndPointer) == (int)ModuleInfoFlags.HasEndPointer;
-        }
+        public bool HasEndPointer => (Flags & (int)ModuleInfoFlags.HasEndPointer) == (int)ModuleInfoFlags.HasEndPointer;
     };
 }

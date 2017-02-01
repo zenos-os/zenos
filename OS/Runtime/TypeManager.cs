@@ -19,24 +19,25 @@ namespace OS.Runtime
 
         public static void* GetModuleSection(TypeManager* pModule, ReadyToRunSectionType sectionId, int* length)
         {
-            ModuleInfoRow* pModuleInfoRows = (ModuleInfoRow*)(pModule->m_pHeader + 1);
+            var pModuleInfoRows = (ModuleInfoRow*)(pModule->m_pHeader + 1);
             Screen.WriteLine("GetModuleSection");
 
             //// TODO: Binary search
             for (int i = 0; i < pModule->m_pHeader->NumberOfSections; i++)
             {
-                //ModuleInfoRow* pCurrent = pModuleInfoRows + i * sizeof(ModuleInfoRow);
                 var pCurrent = pModuleInfoRows[i];
 
                 Screen.Write("Row: ");
                 Screen.Write((uint)i);
                 Screen.Write(", Id = ");
                 Screen.Write((uint)pCurrent.SectionId);
+                Screen.Write(", Length = ");
+                Screen.Write((uint)pCurrent.Length);
                 Screen.WriteLine();
                 
                 if ((int)sectionId == pCurrent.SectionId)
                 {
-                    *length = ModuleInfoRow.GetLength(&pCurrent);
+                    *length = pCurrent.Length;
                     return pCurrent.Start;
                 }
             }
