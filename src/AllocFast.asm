@@ -5,48 +5,6 @@
 include asmmacros.inc
 
 
-;; Allocate non-array, non-finalizable object. If the allocation doesn't fit into the current thread's
-;; allocation context then automatically fallback to the slow allocation path.
-;;  RCX == EEType
-LEAF_ENTRY RhpNewFast, _TEXT
-
-        ;; rdx = GetThread(), TRASHES rax
-        ;;INLINE_GETTHREAD rdx, rax
-
-        EXTERN tls_CurrentThread:ABS
-        mov rdx, tls_CurrentThread
-
-        ;;
-        ;; rcx contains EEType pointer
-        ;;
-        mov         r8d, [rcx + OFFSETOF__EEType__m_uBaseSize]
-
-        ;;
-        ;; eax: base size
-        ;; rcx: EEType pointer
-        ;; rdx: Thread pointer
-        ;;
-
-        mov         rax, [rdx + OFFSETOF__Thread__m_alloc_context__alloc_ptr]
-        add         r8, rax
-        cmp         r8, [rdx + OFFSETOF__Thread__m_alloc_context__alloc_limit]
-        ja          RhpNewFast_RarePath
-
-        ;; set the new alloc pointer
-        mov         [rdx + OFFSETOF__Thread__m_alloc_context__alloc_ptr], r8
-
-        ;; set the new object's EEType pointer
-        mov         [rax], rcx
-        ret
-
-RhpNewFast_RarePath:
-        xor         edx, edx
-        jmp         RhpNewObject
-
-LEAF_END RhpNewFast, _TEXT
-
-
-
 ;; Allocate non-array object with finalizer
 ;;  RCX == EEType
 LEAF_ENTRY RhpNewFinalizable, _TEXT

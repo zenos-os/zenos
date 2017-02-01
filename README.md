@@ -37,6 +37,15 @@ disassemble 0x112ae0,+94
 Looks like we are at least getting to InitializeStatics but there are some issues where we are writing to the screen when we shouldnt be
 
 
+So now we are in InitializeModules and when we assign `Modules = modules` we get an exception
+most likely due to InitializeStatics not actually working. So need to look here as we should
+have an item for StartupCodeHelpers initialized.
+
+I think the original issue with InitializeStatics is fixed now but we need to implement AllocHandle
+in order to finish initializing statics
+
+
+
 GDB notes:
   dissassemble a method:
     disassemble 0x112ae0,+100

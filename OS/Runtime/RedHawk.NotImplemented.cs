@@ -274,12 +274,6 @@ namespace OS.Runtime
             DisplayError("RhpArrayCopy");
         }
 
-        [RuntimeExport("RhpAssignRef")]
-        public static void RhpAssignRef()
-        {
-            DisplayError("RhpAssignRef");
-        }
-
         [RuntimeExport("RhpBox")]
         public static void RhpBox()
         {
@@ -466,18 +460,6 @@ namespace OS.Runtime
             DisplayError("RhpReleaseCastCacheLock");
         }
 
-        [RuntimeExport("RhpReversePInvoke2")]
-        public static void RhpReversePInvoke2()
-        {
-            DisplayError("RhpReversePInvoke2");
-        }
-
-        [RuntimeExport("RhpReversePInvokeReturn2")]
-        public static void RhpReversePInvokeReturn2()
-        {
-            DisplayError("RhpReversePInvokeReturn2");
-        }
-
         [RuntimeExport("RhpSearchDispatchCellCache")]
         public static void RhpSearchDispatchCellCache()
         {
@@ -632,12 +614,6 @@ namespace OS.Runtime
         public static void RhpGetThunkDataBlockAddress()
         {
             DisplayError("RhpGetThunkDataBlockAddress");
-        }
-
-        [RuntimeExport("RhpRegisterFrozenSegment")]
-        public static void RhpRegisterFrozenSegment()
-        {
-            DisplayError("RhpRegisterFrozenSegment");
         }
 
         [RuntimeExport("RhpGetNumThunksPerBlock")]

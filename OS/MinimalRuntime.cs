@@ -1,7 +1,10 @@
 using System;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using Internal.Runtime;
 using OS.Runtime;
+using ReadyToRunHeader = OS.Runtime.ReadyToRunHeader;
+using ReadyToRunSectionType = OS.Runtime.ReadyToRunSectionType;
 
 namespace OS
 {
@@ -47,18 +50,28 @@ namespace OS
         }
 
         [RuntimeExport("RhpRegisterFrozenSegment")]
-        internal static bool RhpRegisterFrozenSegment(IntPtr pSegmentStart, int length)
+        public static bool RhpRegisterFrozenSegment(IntPtr pSegmentStart, int length)
         {
-            return RedhawkGCInterface.RhpRegisterFrozenSegment(pSegmentStart, length);
+            return RedHawkGCInterface.RhpRegisterFrozenSegment(pSegmentStart, length);
         }
 
+        [RuntimeExport("RhpNewFast")]
+        internal static unsafe RuntimeObject* RhpNewFast(EEType* pEEType)
+        {
+            var size = pEEType->BaseSize;
+            var obj = (RuntimeObject*)Memory.Alloc(size);
+            obj->_EEType = pEEType;
+            
+            return obj;
+        }
     }
 
-    class RedhawkGCInterface
+    static class RedHawkGCInterface
     {
+
         public static /*GcSegmentHandle*/ bool RhpRegisterFrozenSegment(IntPtr pSegmentStart, int length)
         {
-            return false;
+            return true;
         }
     }
 }

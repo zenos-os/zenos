@@ -6,11 +6,12 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using static OS.Imports;
+using OS.Runtime;
+using static OS.RuntimeImports;
 
 namespace OS
 {
-    static unsafe class Imports
+    static unsafe class RuntimeImports
     {
         [RuntimeImport("InitializeModules"), MethodImpl(MethodImplOptions.InternalCall)]
         public static extern void InitializeModules(IntPtr modules, int count);
@@ -18,6 +19,12 @@ namespace OS
 
     public static class Program
     {
+
+        public static void Main()
+        {
+            // fake entry point for now or the optimizer will remove it
+            EntryPoint(0);
+        }
 
         static void Wait(int ms)
         {
@@ -36,12 +43,6 @@ namespace OS
             }
         }
 
-        public static void Main()
-        {
-            // fake entry point for now or the optimizer will remove it
-            EntryPoint(0);
-        }
-
         static unsafe void EntryPoint(long heapBase)
         {
             // nice to haves:
@@ -49,7 +50,7 @@ namespace OS
             // string support
             // new objects?
             Memory.Init(heapBase);
-
+            RedHawk.Init();
             Screen.Init();
             Screen.Clear();
             Wait(200);
@@ -67,8 +68,8 @@ namespace OS
 
         static void DoInitModules()
         {
-            //TODO initialize this on startup with real values
-            InitializeModules(new IntPtr(0x017a000), 1);
+            //TODO initialize this on startup with real values AddrOf(__modules_a)
+            InitializeModules(new IntPtr(0x0178000), 1);
         }
     }
 }

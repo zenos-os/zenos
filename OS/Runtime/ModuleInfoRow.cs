@@ -14,7 +14,7 @@ namespace OS.Runtime
         {
             if (HasEndPointer(@this))
             {
-                return (byte)@this->End - (byte)@this->Start;
+                return (int)((long)@this->End - (long)@this->Start);
             }
 
             return sizeof(void*);
