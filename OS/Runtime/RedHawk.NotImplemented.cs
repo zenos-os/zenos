@@ -424,12 +424,6 @@ namespace OS.Runtime
             DisplayError("RhpGetRequestedExceptionEvents");
         }
 
-        [RuntimeExport("RhpHandleAlloc")]
-        public static void RhpHandleAlloc()
-        {
-            DisplayError("RhpHandleAlloc");
-        }
-
         [RuntimeExport("RhpHandleAllocDependent")]
         public static void RhpHandleAllocDependent()
         {

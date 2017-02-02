@@ -64,6 +64,14 @@ namespace OS
             
             return obj;
         }
+
+        [RuntimeExport("RhpHandleAlloc")]
+        internal static unsafe ObjectHandle* RhpHandleAlloc(RuntimeObject* obj, int type)
+        {
+            var handle = (ObjectHandle*) Memory.Alloc(sizeof(ObjectHandle));
+            handle->_handle = obj;
+            return handle;
+        }
     }
 
     static class RedHawkGCInterface

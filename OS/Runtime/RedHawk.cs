@@ -1,3 +1,4 @@
+using System;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using Internal.Runtime;
@@ -80,7 +81,13 @@ namespace OS.Runtime
     {
         internal EEType* _EEType;
     }
-    
+
+    [StructLayout(LayoutKind.Sequential)]
+    unsafe struct ObjectHandle
+    {
+        internal void* _handle;
+    }
+
 
     unsafe struct ReversePInvokeFrame
     {
