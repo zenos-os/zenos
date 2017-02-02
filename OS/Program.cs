@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime;
 using System.Runtime.CompilerServices;
@@ -53,16 +54,32 @@ namespace OS
             RedHawk.Init();
             Screen.Init();
             Screen.Clear();
-            Wait(200);
-
-            Screen.WriteLine(".NET WILL");
-            Wait(500);
-
             DoInitModules();
-            Wait(500);
+
+            Wait(3000);
             Screen.Clear();
+            Screen.ForegroundColor = ConsoleColor.White;
+            Screen.BackgroundColor = ConsoleColor.Black;
+
+            var net = ".NET";
+            Screen.WriteLine(net);
+
+            Wait(500);
+
             Screen.WriteLine("Lives");
             Wait(500);
+
+            //TODO this doesnt work: var str = FormatProvider.FormatInt32(123456, null, null);
+            Screen.WriteLine(string.Concat("a", net));
+            
+            var taco = new Taco(25);
+            Screen.Write((uint)taco.Meat);
+            Screen.WriteLine();
+
+            Wait(1000);
+
+            //Screen.WriteLine(Run());
+
             while (true) ;
         }
 
@@ -71,5 +88,27 @@ namespace OS
             //TODO initialize this on startup with real values AddrOf(__modules_a)
             InitializeModules(new IntPtr(0x0178000), 1);
         }
+
+        static string Run()
+        {
+            var result = "";
+            for (int i = 0; i < 10; i++)
+            {
+                result += i;
+            }
+
+            return result;
+        }
     }
+
+    class Taco
+    {
+        public int Meat { get; private set; }
+
+        public Taco(int meat)
+        {
+            Meat = meat;
+        }
+    }
+
 }

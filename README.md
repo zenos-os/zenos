@@ -14,7 +14,6 @@ TODO:
   * RhGetThreadStaticStorageForModule
   * RhSetThreadStaticStorageForModule
 
-
 dumpbin /SYMBOLS obj\OS.obj > obj\os_symbols.txt
 
 this is all related to _tls_index and Thread Local Storage
@@ -24,8 +23,6 @@ this is all related to _tls_index and Thread Local Storage
 * http://www.nynaeve.net/?p=185
 * http://www.nynaeve.net/?p=186
 
-
 GDB notes:
   dissassemble a method:
     disassemble 0x112ae0,+100
-TODO:

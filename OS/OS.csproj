@@ -47,6 +47,7 @@
     <Compile Include="Runtime\ModuleInfoFlags.cs" />
     <Compile Include="Runtime\ReadyToRunSectionType.cs" />
     <Compile Include="Runtime\ModuleInfoRow.cs" />
+    <Compile Include="Runtime\ThreadStorage.cs" />
     <Compile Include="Screen.cs" />
     <Compile Include="ConsoleColor.cs" />
     <Compile Include="Program.cs" />

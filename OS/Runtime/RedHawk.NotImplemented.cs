@@ -155,9 +155,10 @@ namespace OS.Runtime
         }
 
         [RuntimeExport("memset")]
-        public static void memset()
+        public static unsafe void* memset(void* dest, int val, uint size)
         {
             DisplayError("memset");
+            return null;
         }
 
         [RuntimeExport("OutputDebugStringW")]
@@ -633,19 +634,7 @@ namespace OS.Runtime
         {
             DisplayError("RhpGetNextThunkStubsBlockAddress");
         }
-
-        [RuntimeExport("RhGetThreadStaticStorageForModule")]
-        public static void RhGetThreadStaticStorageForModule()
-        {
-            DisplayError("RhGetThreadStaticStorageForModule");
-        }
-
-        [RuntimeExport("RhSetThreadStaticStorageForModule")]
-        public static void RhSetThreadStaticStorageForModule()
-        {
-            DisplayError("RhSetThreadStaticStorageForModule");
-        }
-
+        
         [RuntimeExport("RhDebugBreak")]
         public static void RhDebugBreak()
         {

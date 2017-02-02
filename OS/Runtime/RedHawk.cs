@@ -57,7 +57,7 @@ namespace OS.Runtime
             }
         }
 
-        private static void DisplayError(string message)
+        public static void DisplayError(string message)
         {
             DisplayErrorInfo(message);
 
@@ -153,7 +153,7 @@ namespace OS.Runtime
     [StructLayout(LayoutKind.Sequential)]
     unsafe struct ObjectHandle
     {
-        internal void* _handle;
+        internal RuntimeObject* _handle;
     }
 
 
