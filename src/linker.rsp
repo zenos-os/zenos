@@ -1,7 +1,5 @@
 obj\multiboot_header.obj
 obj\boot.obj
-obj\AllocFast.obj
-obj\globals.obj
 obj\OS.obj
 obj\modules.obj
 obj\dotnet.obj

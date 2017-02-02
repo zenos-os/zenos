@@ -12,15 +12,8 @@ set ROOT=%~dp0
 set ISO_PATH=%ROOT%\bin\os.iso
 
 set TOOLS_PATH=%ROOT%\tools
-set CORERT_PATH=%ROOT%..\corert
-
-set CoreRT_AppDepSdkVer=1.0.6-prerelease-00004
-set CoreRT_BuildArch=x64
-set CoreRT_AppDepSdkPkg=toolchain.win7-%CoreRT_BuildArch%.Microsoft.DotNet.AppDep
-set CoreRT_AppDepSdkDir=%CORERT_PATH%\packages\%CoreRT_AppDepSdkPkg%\%CoreRT_AppDepSdkVer%
 
 set NASM_CMD=%TOOLS_PATH%\nasm.exe
-set MASM_CMD=ml64
 set QEMU_OPTIONS=
 
 call:main
@@ -32,11 +25,9 @@ goto:eof
   echo :: Building assembly files ::
   call:compile_asm boot
   call:compile_asm multiboot_header
-  call:compile_asm globals
   call:compile_asm load_end_addr
   call:compile_asm modules
   call:compile_asm dotnet
-  call:compile_masm AllocFast
 
   echo :: Building KOS ::
 
@@ -64,13 +55,6 @@ goto:eof
   echo  - Assembling: src\%~1.asm
   %NASM_CMD% -f win64 -o obj\%~1.obj src\%~1.asm || call:error "compiling %~1.asm"
 goto:eof
-
-:compile_masm
-  echo  - Assembling: src\%~1.asm
-  %MASM_CMD% /nologo /c src\%~1.asm  || call:error "compiling %~1.asm"
-  move %~1.obj obj\%~1.obj > nul
-goto:eof
-
 
 :error
   echo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

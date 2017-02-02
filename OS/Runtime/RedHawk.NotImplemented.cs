@@ -797,7 +797,7 @@ namespace OS.Runtime
         }
 
         [RuntimeExport("RhpPublishObject")]
-        public static void RhpPublishObject()
+        public static unsafe void RhpPublishObject(void* obj, uint size)
         {
             DisplayError("RhpPublishObject");
         }

@@ -44,7 +44,7 @@ namespace OS
         //void* RhpGcAlloc(EEType *pEEType, UInt32 uFlags, UIntNative cbSize, void * pTransitionFrame)
         //[NativeCallable(EntryPoint = "RhpGcAlloc")]
         [RuntimeExport("RhpGcAlloc")]
-        public static void* RhpGcAlloc(void* pEEType, uint uFlags, long cbSize, void* pTransitionFrame)
+        internal static void* RhpGcAlloc(EEType* pEEType, uint uFlags, long cbSize, void* pTransitionFrame)
         {
             return Memory.Alloc(cbSize);
         }
@@ -60,7 +60,7 @@ namespace OS
         {
             var size = pEEType->BaseSize;
             var obj = (RuntimeObject*)Memory.Alloc(size);
-            obj->_EEType = pEEType;
+            obj->SetEEType(pEEType);
             
             return obj;
         }

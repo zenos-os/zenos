@@ -8,12 +8,11 @@
 https://qemu.weilnetz.de/w64/
 
 TODO:
-* port AllocFast.asm to C#
-  * RhpNewFinalizable
-  * RhpNewObject
-  * RhpNewArray
 * get gdb able to print symbols
 * Call InitializeModules properly
+* Support static constructors
+  * RhGetThreadStaticStorageForModule
+  * RhSetThreadStaticStorageForModule
 
 
 dumpbin /SYMBOLS obj\OS.obj > obj\os_symbols.txt

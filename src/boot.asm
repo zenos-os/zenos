@@ -166,9 +166,6 @@ long_mode_start:
     mov fs, rax
     mov ss, rax
 
-    ;extern tls_CurrentThread
-    ;mov gs, [tls_CurrentThread]
-
     ;extern __managed__Main
     ;mov	esi, 2
     ;mov	edi, 1
