@@ -39,8 +39,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ColorCode.cs" />
+    <Compile Include="Kernel.cs" />
     <Compile Include="Native.cs" />
-    <Compile Include="RuntimeImports.cs" />
     <Compile Include="Runtime\RedHawk.NotImplemented.cs" />
     <Compile Include="Runtime\ReadyToRunHeader.cs" />
     <Compile Include="Runtime\DispatchMap.cs" />

@@ -6,7 +6,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using OS.Runtime;
-using static OS.RuntimeImports;
 
 namespace OS
 {
@@ -42,14 +41,8 @@ namespace OS
             // static ctors
             // string support
             // new objects?
-            Memory.Init(heapBase);
-            RedHawk.Init();
-            Screen.Init();
-            Screen.Clear();
+            Kernel.Start(modules, count, heapBase);
             
-            InitializeModules(modules, count);
-
-            Wait(3000);
             Screen.Clear();
             Screen.ForegroundColor = ConsoleColor.White;
             Screen.BackgroundColor = ConsoleColor.Black;
@@ -59,6 +52,7 @@ namespace OS
 
             Wait(500);
 
+            
             Screen.WriteLine("Lives");
             Wait(500);
 
@@ -92,6 +86,7 @@ namespace OS
             return result;
         }
     }
+
 
     class Taco
     {
