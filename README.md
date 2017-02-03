@@ -9,10 +9,6 @@ https://qemu.weilnetz.de/w64/
 
 TODO:
 * get gdb able to print symbols
-* Call InitializeModules properly
-* Support static constructors
-  * RhGetThreadStaticStorageForModule
-  * RhSetThreadStaticStorageForModule
 
 dumpbin /SYMBOLS obj\OS.obj > obj\os_symbols.txt
 

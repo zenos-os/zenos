@@ -25,5 +25,5 @@ goto:eof
   )
 
   echo :: starting qemu ::
-  "C:\Program Files\qemu\qemu-system-x86_64.exe" -cdrom "%ISO_PATH%" -no-reboot -d cpu_reset -boot d -m 128 %QEMU_OPTIONS%
+  "C:\Program Files\qemu\qemu-system-x86_64.exe" -cdrom "%ISO_PATH%" -no-reboot -d cpu_reset -boot d -m 128 -serial file:serial.log %QEMU_OPTIONS%
 goto:eof

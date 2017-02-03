@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,19 +10,13 @@ using static OS.RuntimeImports;
 
 namespace OS
 {
-    static unsafe class RuntimeImports
-    {
-        [RuntimeImport("InitializeModules"), MethodImpl(MethodImplOptions.InternalCall)]
-        public static extern void InitializeModules(IntPtr modules, int count);
-    }
-
     public static class Program
     {
 
         public static void Main()
         {
             // fake entry point for now or the optimizer will remove it
-            EntryPoint(0);
+            EntryPoint(IntPtr.Zero, 0, 0);
         }
 
         static void Wait(int ms)
@@ -44,7 +36,7 @@ namespace OS
             }
         }
 
-        static unsafe void EntryPoint(long heapBase)
+        static unsafe void EntryPoint(IntPtr modules, int count, long heapBase)
         {
             // nice to haves:
             // static ctors
@@ -54,7 +46,8 @@ namespace OS
             RedHawk.Init();
             Screen.Init();
             Screen.Clear();
-            DoInitModules();
+            
+            InitializeModules(modules, count);
 
             Wait(3000);
             Screen.Clear();
@@ -80,15 +73,14 @@ namespace OS
 
             //Screen.WriteLine(Run());
 
+            var serial = new Serial(0x3f8);
+            serial.Write('a');
+            serial.Write('b');
+            serial.Write('c');
+
             while (true) ;
         }
-
-        static void DoInitModules()
-        {
-            //TODO initialize this on startup with real values AddrOf(__modules_a)
-            InitializeModules(new IntPtr(0x0178000), 1);
-        }
-
+        
         static string Run()
         {
             var result = "";
@@ -110,5 +102,4 @@ namespace OS
             Meat = meat;
         }
     }
-
 }
