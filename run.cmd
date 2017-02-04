@@ -3,8 +3,8 @@
 set DEBUG_GDB=0
 set QEMU_OPTIONS=
 set ROOT=%~dp0
-set SRC_PATH=%ROOT%\src
-set BIN_PATH=%ROOT%\bin
+set SCRIPTS_PATH=%ROOT%\scripts
+set BIN_PATH=%ROOT%\bin\Debug
 set ISO_PATH=%BIN_PATH%\os.iso
 set KERNEL_PATH=%BIN_PATH%\kernel.bin
 set KERNEL_PDB=%BIN_PATH%\kernel.pdb
@@ -21,7 +21,7 @@ goto:eof
   IF /I "%DEBUG_GDB%" EQU "1" (
     echo Debugging GDB
     set QEMU_OPTIONS=-S -gdb tcp::1234
-    start "GDB" %GDB_CMD% -d %BIN_PATH% --exec %KERNEL_PATH% --symbols %KERNEL_PDB% -x %SRC_PATH%\start_gdb.txt
+    start "GDB" %GDB_CMD% -d %BIN_PATH% --exec %KERNEL_PATH% --symbols %KERNEL_PDB% -x %SCRIPTS_PATH%\start_gdb.txt
   )
 
   echo :: starting qemu ::
