@@ -22,6 +22,8 @@
 
 # Zenos
 
+[![Join the chat at https://gitter.im/zenos-os/zenos](https://badges.gitter.im/zenos-os/zenos.svg)](https://gitter.im/zenos-os/zenos?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Zenos is a work in progress 64-bit operating system written in C# and x86-64 assembly.
 
 # Overview
