@@ -11,7 +11,7 @@
 [github-issues]: https://img.shields.io/github/issues/zenos-os/zenos.svg
 [github-forks]: https://img.shields.io/github/forks/zenos-os/zenos.svg
 [github-stars]: https://img.shields.io/github/stars/zenos-os/zenos.svg
-[github-license]: https://img.shields.io/github/license/mashape/apistatus.svg
+[github-license]: https://img.shields.io/badge/license-MIT-blue.svg
 [github-link]: https://github.com/zenos-os/zenos
 [github-stars-link]: https://github.com/zenos-os/zenos/stargazers
 [github-forks-link]: https://github.com/zenos-os/zenos/network
