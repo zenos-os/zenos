@@ -32,37 +32,31 @@ start_dotnet:
 ; rcx port
 ; rdx value
 Out8:
-  push rax
   mov rax, rdx
   mov rdx, rcx
   ; rax has the value now
   ; rdx has the port
   out dx, al
-  pop rax
   ret
 
 ; rcx port
 ; rdx value
 Out16:
-  push rax
   mov rax, rdx
   mov rdx, rcx
   ; rax has the value now
   ; rdx has the port
   out dx, ax
-  pop rax
   ret
 
 ; rcx port
 ; rdx value
 Out32:
-  push rax
   mov rax, rdx
   mov rdx, rcx
   ; rax has the value now
   ; rdx has the port
   out dx, eax
-  pop rax
   ret
 
 

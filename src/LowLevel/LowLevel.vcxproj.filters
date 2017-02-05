@@ -30,5 +30,8 @@
     <CustomBuild Include="multiboot_header.asm">
       <Filter>Source Files</Filter>
     </CustomBuild>
+    <CustomBuild Include="interrupts.asm">
+      <Filter>Source Files</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

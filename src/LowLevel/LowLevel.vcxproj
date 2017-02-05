@@ -115,7 +115,6 @@
       <FileType>Document</FileType>
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\tools\nasm.exe -f win64 -o $(BaseIntermediateOutputPath)%(Filename).obj %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(BaseIntermediateOutputPath)%(Filename).obj</Outputs>
-      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkObjects>
     </CustomBuild>
     <CustomBuild Include="modules.asm">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -130,6 +129,14 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\tools\nasm.exe -f win64 -o $(BaseIntermediateOutputPath)%(Filename).obj %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(BaseIntermediateOutputPath)%(Filename).obj</Outputs>
       <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="interrupts.asm">
+      <DeploymentContent>true</DeploymentContent>
+      <FileType>HTML</FileType>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(BaseIntermediateOutputPath)%(Filename).obj</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\tools\nasm.exe -f win64 -o $(BaseIntermediateOutputPath)%(Filename).obj %(FullPath)</Command>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

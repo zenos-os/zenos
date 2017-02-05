@@ -144,7 +144,7 @@ namespace OS.Runtime
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    unsafe struct RuntimeArray
+    struct RuntimeArray
     {
         internal RuntimeObject _object;
         internal uint _length;
@@ -156,20 +156,19 @@ namespace OS.Runtime
         internal RuntimeObject* _handle;
     }
 
-
-    unsafe struct ReversePInvokeFrame
+    struct ReversePInvokeFrame
     {
-        public void* m_savedPInvokeTransitionFrame;
-        public Thread* m_savedThread;
+        public IntPtr m_savedPInvokeTransitionFrame;
+        public IntPtr m_savedThread;
     };
 
-    struct Thread
-    {
-        public ThreadBuffer threadBuffer;
-    }
+    //struct Thread
+    //{
+    //    public ThreadBuffer threadBuffer;
+    //}
 
-    struct ThreadBuffer
-    {
+    //struct ThreadBuffer
+    //{
         
-    }
+    //}
 }
