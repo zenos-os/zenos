@@ -1,0 +1,2 @@
+tools\gdb.exe filter=lfs diff=lfs merge=lfs -text
+tools\qemu filter=lfs diff=lfs merge=lfs -text
