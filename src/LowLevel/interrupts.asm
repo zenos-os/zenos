@@ -1,7 +1,7 @@
 section .text
 bits 64
 
-%macro no_error_code_interrupt_handler %1
+%macro no_error_code_interrupt_handler 1
 global interrupt_handler_%1
 interrupt_handler_%1:
     push    dword 0                     ; push 0 as error code
@@ -9,7 +9,7 @@ interrupt_handler_%1:
     jmp     common_interrupt_handler    ; jump to the common handler
 %endmacro
 
-%macro error_code_interrupt_handler %1
+%macro error_code_interrupt_handler 1
 global interrupt_handler_%1
 interrupt_handler_%1:
     push    dword %1                    ; push the interrupt number
@@ -68,13 +68,13 @@ no_error_code_interrupt_handler 4
 no_error_code_interrupt_handler 5
 no_error_code_interrupt_handler 6
 no_error_code_interrupt_handler 7  
-error_code_handler              8 
+error_code_interrupt_handler    8 
 no_error_code_interrupt_handler 9 
-error_code_handler              10
-error_code_handler              11
-error_code_handler              12
-error_code_handler              13
-error_code_handler              14
+error_code_interrupt_handler    10
+error_code_interrupt_handler    11
+error_code_interrupt_handler    12
+error_code_interrupt_handler    13
+error_code_interrupt_handler    14
 no_error_code_interrupt_handler 15
 no_error_code_interrupt_handler 16
-error_code_handler              17
+error_code_interrupt_handler    17
