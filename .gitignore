@@ -1,9 +1,14 @@
 bin
 obj
+artifacts/
 x64
+.tmp
 .vs/
 *.user
 *.suo
 *.db
 *.opendb
 serial.log
+*.ncrunchproject
+*.ncrunchsolution
+*.cache

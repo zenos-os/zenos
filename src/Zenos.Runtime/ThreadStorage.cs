@@ -7,24 +7,24 @@ namespace Zenos.Runtime
 {
     public static partial class ThreadStorage
     {
-        private static unsafe ObjectHandle*[] m_pThreadLocalModuleStatics;
+        private static ObjectHandle[] m_pThreadLocalModuleStatics;
         private static uint m_numThreadLocalModuleStatics;
 
         [RuntimeExport("RhGetThreadStaticStorageForModule")]
-        internal static unsafe RuntimeObject* RhGetThreadStaticStorageForModule(int moduleIndex)
+        internal static unsafe RuntimeObject RhGetThreadStaticStorageForModule(int moduleIndex)
         {
             // Return a pointer to the TLS storage if it has already been
             // allocated for the specified module.
             if (moduleIndex < m_numThreadLocalModuleStatics)
             {
-                return m_pThreadLocalModuleStatics[moduleIndex]->_handle;
+                return m_pThreadLocalModuleStatics[moduleIndex]._handle;
             }
 
             return null;
         }
 
         [RuntimeExport("RhSetThreadStaticStorageForModule")]
-        internal static unsafe bool RhSetThreadStaticStorageForModule(RuntimeObject* pStorage, UInt32 moduleIndex)
+        internal static unsafe bool RhSetThreadStaticStorageForModule(RuntimeObject pStorage, UInt32 moduleIndex)
         {
             // Grow thread local storage if needed.
             if (m_numThreadLocalModuleStatics <= moduleIndex)
@@ -35,7 +35,7 @@ namespace Zenos.Runtime
                     return false;
                 }
 
-                var pThreadLocalModuleStatics = new ObjectHandle*[newSize];
+                var pThreadLocalModuleStatics = new ObjectHandle[newSize];
 
                 //TODO: memset(&pThreadLocalModuleStatics[m_numThreadLocalModuleStatics], 0, sizeof(RuntimeObject*) * (newSize - m_numThreadLocalModuleStatics));
 

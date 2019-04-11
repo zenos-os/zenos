@@ -3,8 +3,8 @@
 namespace Zenos.Runtime
 {
     [StructLayout(LayoutKind.Sequential)]
-    unsafe struct ObjectHandle
+    unsafe class ObjectHandle
     {
-        internal RuntimeObject* _handle;
+        internal RuntimeObject _handle;
     }
 }

@@ -5,29 +5,11 @@
 The following now builds all assembly files as well as the kernel.
 
 TODO:
-* Update building the ISO from OS.bin
-* See if it will boot
-* Should be good to delete LowLevel project now
-
-
-```batch
-dotnet build -r win-x64
-```
-
-
-
-
-Look into using the sample provided here:
-https://github.com/dotnet/corert/blob/635cf21aca11265ded9d78d216424bd609c052f5/tests/src/Simple/StaticLibrary/StaticLibrary.csproj
+  * Get Interrupts working
+  * Convert to UEFI boot
 
 
 https://natemcmaster.com/blog/2017/07/05/msbuild-task-in-nuget/
-
-
-NuGet will automatically import the build/(package id).props file is imported into projects when the project has a single TargetFramework. It will import buildMultiTargeting/(package id).props when the project has multiple TargetFrameworks. (FYI - NuGet will also import build/(package id).targets and buildMultiTargeting/(package id).targets. .props files are imported near the top of the file and .targets files near the bottom.)
-
-
-Looks like `NativeObject` msbuild property stores our file name for the obj file
 
 
 GDB Debugging:
@@ -43,3 +25,18 @@ show registers
 
 disassemble
 	disas  0x000000000101b07,+10
+
+
+
+Interrupts:
+	install interrupt table
+	https://github.com/redox-os/kernel/blob/0c8ba636f4263665dae1b0fdd0a040e4e0c724f5/arch/x86_64/src/idt.rs
+	https://github.com/awesomekling/serenity/blob/master/Kernel/i386.cpp
+
+	interrupt macro definition:
+	https://github.com/redox-os/kernel/blob/e20135575c6392dfbf43e117cafee03e00ae8f0c/arch/x86_64/src/lib.rs
+	https://github.com/redox-os/kernel/blob/054fc41beb82019152bfc5186557aedb4e8b5d2a/src/arch/x86_64/macros.rs
+
+	interrupt macro usage:
+	https://github.com/redox-os/kernel/blob/054fc41beb82019152bfc5186557aedb4e8b5d2a/src/arch/x86_64/interrupt/exception.rs
+

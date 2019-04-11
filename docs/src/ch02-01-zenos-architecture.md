@@ -2,10 +2,12 @@
 
 ## Components
 
-* ILCompiler(CoreRT)
-* System.Private.CoreLib
-* Zenos compiler
-* Zenos OS
+* Zenos.Kernel - Kernel (Entrypoint for OS)
+  * Zenos.Kernel.CoreLib - Minimal Corelib implementation for use in the Kernel
+  * Zenos.Runtime - Runtime infrastruction required to boot the Kernel in .NET (Used by Kernel) Kept seperate so we can have multiple Kernels for testing
+  * Kernel.Core - Shared project containing common code that can be easily unit tested(Included in Zenos.Tests)
+* Zenos.CoreLib - Full corelib implementation for Zenos applications
+* ILCompiler(CoreRT/external tool)
 
 ## Build process
 
@@ -24,11 +26,21 @@
 
 ## Build commands
 
+How to debug the OS with GDB:
+
+### Start the OS via QEMU in debug mode
+
 ```bash
 make debug
-make gdb
-make
 ```
+
+### Start GDB to connect to QEMU
+
+```bash
+make gdb
+```
+
+
 
 ## Calling convention
 

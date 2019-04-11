@@ -244,7 +244,7 @@ namespace Zenos.Runtime
             Write(str);
             Write("\r\n");
         }
-        
+
         static ushort GetColorCode()
         {
             var fg = (byte)ForegroundColor;

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using Internal.Runtime.CompilerServices;
 
 namespace Zenos.Runtime
 {
@@ -12,10 +13,11 @@ namespace Zenos.Runtime
             _handleValue = handleValue;
         }
 
-        internal unsafe TypeManagerHandle(TypeManager* typeManager)
+        internal unsafe TypeManagerHandle(TypeManager typeManager)
         {
-            var p = (long)(typeManager) + 1;
-            
+            var addr = Unsafe.AsPointer(ref typeManager);
+            var p = (long)(addr) + 1;
+
             _handleValue = new IntPtr(p);
         }
 
@@ -41,19 +43,19 @@ namespace Zenos.Runtime
             }
         }
 
-        internal unsafe TypeManager* AsTypeManagerPtr
+        internal unsafe TypeManager AsTypeManagerPtr
         {
             get
             {
                 Debug.Assert(IsTypeManager);
                 unsafe
                 {
-                    return (TypeManager*)(((byte*)(void*)_handleValue) - 1);
+                    return Unsafe.AsRef<TypeManager>(((byte*)(void*)_handleValue) - 1);
                 }
             }
         }
-
-        public static  implicit operator TypeManagerHandle(System.Runtime.TypeManagerHandle handle) => 
-            new TypeManagerHandle(handle.GetIntPtrUNSAFE());
+        //
+        //        public static  implicit operator TypeManagerHandle(System.Runtime.TypeManagerHandle handle) => 
+        //            new TypeManagerHandle(handle.GetIntPtrUNSAFE());
     }
 }

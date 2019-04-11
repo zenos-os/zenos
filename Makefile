@@ -73,7 +73,7 @@ $(OS_DLL): $(OS_SOURCES)
 	$(DOTNET) build
 
 $(ILC):
-	@cd ./vendor/corert; ./build.sh clean anyos Release
+	@cd ./vendor/corert; ./build.sh clean x64 Release
 
 clean:
 	rm -rf obj/

@@ -4,21 +4,21 @@ using System.Runtime.InteropServices;
 
 namespace Zenos.Runtime
 {
-    public unsafe struct RuntimeInstance
+    public unsafe class RuntimeInstance
     {
-        static RuntimeInstance* _instance;
+        static RuntimeInstance _instance;
 
-        private OsModuleEntry* _osModuleList;
-        private TypeManagerEntry* _typeManagerList;
+        private OsModuleEntry _osModuleList;
+        private TypeManagerEntry _typeManagerList;
 
         public static bool Initialize()
         {
-            var pRuntimeInstance = Memory.Alloc<RuntimeInstance>();
+            var pRuntimeInstance = Memory.AllocObject<RuntimeInstance>();
             if (pRuntimeInstance == null)
                 return false;
 
-            pRuntimeInstance->_osModuleList = null;
-            pRuntimeInstance->_typeManagerList = null;
+            pRuntimeInstance._osModuleList = null;
+            pRuntimeInstance._typeManagerList = null;
             //
             //            CreateHolder<ThreadStore> pThreadStore = ThreadStore::Create(pRuntimeInstance);
             //            if (NULL == pThreadStore)
@@ -41,12 +41,12 @@ namespace Zenos.Runtime
         {
             var typeManager = TypeManager.Create(osModule, moduleHeader, classLibFunctions, numClassLibFunctions);
 
-            GetRuntimeInstance()->RegisterTypeManager(typeManager);
+            GetRuntimeInstance().RegisterTypeManager(typeManager);
 
             return new TypeManagerHandle(typeManager);
         }
 
-        public bool RegisterTypeManager(TypeManager* typeManager)
+        public bool RegisterTypeManager(in TypeManager typeManager)
         {
             var entry = TypeManagerEntry.Create(typeManager);
             if (entry == null)
@@ -59,28 +59,28 @@ namespace Zenos.Runtime
             return true;
         }
 
-        internal OsModuleEntry* GetOsModuleList()
+        internal OsModuleEntry GetOsModuleList()
         {
             return _osModuleList;
         }
 
-        struct TypeManagerEntry
+        class TypeManagerEntry
         {
-            public TypeManagerEntry* _next;
-            public TypeManager* _typeManager;
+            public TypeManagerEntry _next;
+            public TypeManager _typeManager;
 
-            public static TypeManagerEntry* Create(TypeManager* typeManager)
+            public static TypeManagerEntry Create(in TypeManager typeManager)
             {
-                var pEntry = Memory.Alloc<TypeManagerEntry>();
+                var pEntry = Memory.AllocObject<TypeManagerEntry>();
                 if (pEntry == null)
                     return null;
 
-                pEntry->_typeManager = typeManager;
+                pEntry._typeManager = typeManager;
 
                 return pEntry;
             }
 
-            public static void PushHead(ref TypeManagerEntry* current, TypeManagerEntry* entry)
+            public static void PushHead(ref TypeManagerEntry current, TypeManagerEntry entry)
             {
                 if (current == null)
                 {
@@ -88,28 +88,28 @@ namespace Zenos.Runtime
                     return;
                 }
 
-                entry->_next = current;
+                entry._next = current;
                 current = entry;
             }
         }
 
-        internal struct OsModuleEntry
+        internal class OsModuleEntry
         {
-            public OsModuleEntry* _next;
+            public OsModuleEntry _next;
             public IntPtr _osModule;
 
-            public static OsModuleEntry* Create(IntPtr osModule)
+            public static OsModuleEntry Create(IntPtr osModule)
             {
-                var pEntry = Memory.Alloc<OsModuleEntry>();
+                var pEntry = Memory.AllocObject<OsModuleEntry>();
                 if (pEntry == null)
                     return null;
 
-                pEntry->_osModule = osModule;
+                pEntry._osModule = osModule;
 
                 return pEntry;
             }
-            
-            public static void PushHead(ref OsModuleEntry* current, OsModuleEntry* entry)
+
+            public static void PushHead(ref OsModuleEntry current, OsModuleEntry entry)
             {
                 if (current == null)
                 {
@@ -117,12 +117,12 @@ namespace Zenos.Runtime
                     return;
                 }
 
-                entry->_next = current;
+                entry._next = current;
                 current = entry;
             }
         }
 
-        public static RuntimeInstance* GetRuntimeInstance()
+        public static RuntimeInstance GetRuntimeInstance()
         {
             return _instance;
         }
@@ -132,22 +132,22 @@ namespace Zenos.Runtime
         {
             // TODO: register os module
 
-            var pEntry = Memory.Alloc<OsModuleEntry>();
-            if (pEntry == null) 
+            var pEntry = Memory.AllocObject<OsModuleEntry>();
+            if (pEntry == null)
                 return IntPtr.Zero;
 
-            pEntry->_osModule = osModule;
+            pEntry._osModule = osModule;
 
             {
-                RuntimeInstance* pRuntimeInstance = GetRuntimeInstance();
+                RuntimeInstance pRuntimeInstance = GetRuntimeInstance();
                 //                ReaderWriterLock::WriteHolder write(&pRuntimeInstance->GetTypeManagerLock());
 
-                OsModuleEntry.PushHead(ref pRuntimeInstance->_osModuleList, pEntry);
+                OsModuleEntry.PushHead(ref pRuntimeInstance._osModuleList, pEntry);
             }
 
             return osModule; // Return non-null on success
         }
 
-        
+
     }
 }

@@ -1,3 +1,5 @@
+using Internal.Runtime.CompilerServices;
+
 namespace Zenos.Runtime
 {
     public static unsafe class Memory
@@ -9,9 +11,22 @@ namespace Zenos.Runtime
             _heapBase = heapBase;
         }
 
-        public static T* Alloc<T>() where T : unmanaged
+        public static T AllocObject<T>() where T : class
         {
-            return (T*) Alloc(sizeof(T));
+            var size = Unsafe.SizeOf<T>();
+            return AllocObject<T>(size);
+        }
+
+        public static T AllocObject<T>(int size) where T : class
+        {
+            var mem = Alloc(size);
+
+            return Unsafe.AsRef<T>(mem);
+        }
+
+        public static ref T Alloc<T>() where T : unmanaged
+        {
+            return ref Unsafe.AsRef<T>(Alloc(sizeof(T)));
         }
 
         public static void* Alloc(long size)
@@ -21,10 +36,10 @@ namespace Zenos.Runtime
             return pos;
         }
 
-        public static void* Alloc(int size)
+        public static void* Alloc(uint size)
         {
             var pos = (void*)_heapBase;
-            _heapBase = _heapBase + size;
+            _heapBase += size;
             return pos;
         }
     }

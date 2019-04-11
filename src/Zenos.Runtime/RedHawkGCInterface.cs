@@ -1,7 +1,7 @@
 using System;
 using System.Runtime;
 
-namespace OS.Runtime
+namespace Zenos.Runtime
 {
     internal static class RedHawkGCInterface
     {

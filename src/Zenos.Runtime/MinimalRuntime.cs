@@ -15,7 +15,7 @@ namespace Zenos.Runtime
         }
 
 
-        [RuntimeExport("RhpPInvokeReturn")] 
+        [RuntimeExport("RhpPInvokeReturn")]
         public static void RhpPInvokeReturn()
         {
             // TODO
@@ -29,9 +29,9 @@ namespace Zenos.Runtime
         }
 
         [RuntimeExport("RhpGetModuleSection")]
-        public static void* RhpGetModuleSection(TypeManagerHandle* pModule, int headerId, out int length)
+        public static void* RhpGetModuleSection(in TypeManagerHandle pModule, int headerId, out int length)
         {
-            return pModule->AsTypeManagerPtr->GetModuleSection((ReadyToRunSectionType)headerId, out length);
+            return pModule.AsTypeManagerPtr.GetModuleSection((ReadyToRunSectionType)headerId, out length);
         }
 
         [RuntimeExport("RhpReversePInvoke2")]
@@ -60,11 +60,11 @@ namespace Zenos.Runtime
 
 
         [RuntimeExport("RhpNewFast")]
-        internal static void* RhpNewFast(EEType* pEEType)
+        internal static object RhpNewFast(in EEType pEEType)
         {
-            var size = pEEType->BaseSize;
-            var obj = (RuntimeObject*)Memory.Alloc(size);
-            obj->SetEEType(pEEType);
+            var size = pEEType.BaseSize;
+            var obj = Memory.AllocObject<RuntimeObject>((int)size);
+            obj.SetEEType(pEEType);
 
             return obj;
         }
@@ -97,18 +97,18 @@ namespace Zenos.Runtime
         //private const int RH_LARGE_OBJECT_SIZE = 85000;
 
         [RuntimeExport("RhpNewFinalizable")]
-        internal static void* RhpNewFinalizable(EEType* pEEType)
+        internal static object RhpNewFinalizable(in EEType pEEType)
         {
-            Debug.Assert(!pEEType->RequiresAlign8);
-            Debug.Assert(pEEType->IsFinalizable);
+            Debug.Assert(!pEEType.RequiresAlign8);
+            Debug.Assert(pEEType.IsFinalizable);
 
-            var size = pEEType->BaseSize;
-//            var obj = (RuntimeObject*)RhpGcAlloc(pEEType, GC_ALLOC_FINALIZE, size, NULL);
-            var obj = (RuntimeObject*)Memory.Alloc(size);
-            obj->SetEEType(pEEType);
-//
-//            if (size >= RH_LARGE_OBJECT_SIZE)
-//                RhpPublishObject(pObject, size);
+            var size = pEEType.BaseSize;
+            //            var obj = (RuntimeObject*)RhpGcAlloc(pEEType, GC_ALLOC_FINALIZE, size, NULL);
+            var obj = Memory.AllocObject<RuntimeObject>((int)size);
+            obj.SetEEType(pEEType);
+            //
+            //            if (size >= RH_LARGE_OBJECT_SIZE)
+            //                RhpPublishObject(pObject, size);
 
 
 
@@ -116,10 +116,10 @@ namespace Zenos.Runtime
         }
 
         [RuntimeExport("RhpHandleAlloc")]
-        internal static unsafe ObjectHandle* RhpHandleAlloc(RuntimeObject* obj, int type)
+        internal static ObjectHandle RhpHandleAlloc(RuntimeObject obj, int type)
         {
-            var handle = Memory.Alloc<ObjectHandle>();
-            handle->_handle = obj;
+            var handle = Memory.AllocObject<ObjectHandle>();
+            handle._handle = obj;
             return handle;
         }
     }
