@@ -6,7 +6,7 @@ using Internal.Runtime;
 
 namespace Zenos.Runtime
 {
-    public static unsafe class MinimalRuntime
+    public static class MinimalRuntime
     {
         [RuntimeExport("RhpPInvoke")]
         public static void RhpPInvoke()
@@ -29,7 +29,7 @@ namespace Zenos.Runtime
         }
 
         [RuntimeExport("RhpGetModuleSection")]
-        public static void* RhpGetModuleSection(in TypeManagerHandle pModule, int headerId, out int length)
+        public static unsafe void* RhpGetModuleSection(in TypeManagerHandle pModule, int headerId, out int length)
         {
             return pModule.AsTypeManagerPtr.GetModuleSection((ReadyToRunSectionType)headerId, out length);
         }
@@ -52,7 +52,7 @@ namespace Zenos.Runtime
         //            return Memory.Alloc(cbSize);
         //        }
         [RuntimeExport("RhpAssignRef")]
-        public static void RhpAssignRef(void** dst, void* @ref)
+        public static unsafe void RhpAssignRef(void** dst, void* @ref)
         {
             *dst = @ref;
             // InlineCheckedWriteBarrier(dst, ref);

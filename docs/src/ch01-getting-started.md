@@ -6,6 +6,9 @@
 * CoreRT
 * Zenos Tooling
 
+
+dotnet tool install Nuke.GlobalTool --global
+
 ### Windows Subsystem For Linux
 
 Setup VS for remote debugging:

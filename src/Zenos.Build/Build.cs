@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using Nuke.Common;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
@@ -16,6 +18,21 @@ using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 using static Nuke.Common.Tooling.ProcessTasks;
 using static Nuke.Common.Logger;
+
+static class ToolSettingsExtensions
+{
+    public static T AsWslToolSettings<T>(this T settings) where T : ToolSettings
+    {
+        var originalToolPath = Path.GetFileNameWithoutExtension(settings.ToolPath);
+        var originalArgumentConfigurator = settings.ArgumentConfigurator;
+        return settings;
+        //.SetToolPath("wsl")
+        //.SetArgumentConfigurator(arguments =>
+        //    new Arguments()
+        //        .Add(originalToolPath)
+        //        .Concatenate(originalArgumentConfigurator(arguments)));
+    }
+}
 
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
@@ -63,13 +80,15 @@ class Build : NukeBuild
     AbsolutePath IlcCommand => RootDirectory / "vendor" / "corert" / "bin" / "Linux.x64.Release" / "tools" / "ilc";
     string NasmOptions = "-f elf64";
 
+    AbsolutePath CoreRTBuildCommand => CoreRTDirectory / "build.sh";
 
-    string WslPath(string path) =>
-        StartProcess("wsl", $"wslpath -u \"{path}\"", logOutput: true)
-            .AssertZeroExitCode()
-            .Output
-            .Select(x => x.Text)
-            .FirstOrDefault();
+
+    string WslPath(string path) => path;
+    //StartProcess("wsl", $"wslpath -u \"{path}\"", logOutput: true)
+    //    .AssertZeroExitCode()
+    //    .Output
+    //    .Select(x => x.Text)
+    //    .FirstOrDefault();
 
     bool NeedsBuild(AbsolutePath target, IEnumerable<AbsolutePath> sources) =>
         NeedsBuild(target, sources.ToArray());
@@ -84,9 +103,6 @@ class Build : NukeBuild
 
         var targetDate = GetLastWriteTimeUtc(target);
 
-
-        Info($"Sources:");
-
         var sourcesDates = (from source in sources
                             let sourceDate = GetLastWriteTimeUtc(source)
                             orderby sourceDate descending
@@ -94,11 +110,16 @@ class Build : NukeBuild
 
         var sourcesDate = sourcesDates.FirstOrDefault();
 
-        Info($"Target: {target}");
-        Info($"Target Date: {targetDate}");
-        Info($"Source: {sourcesDate.source}");
-        Info($"Source Date: {sourcesDate.sourceDate}");
-        return targetDate < sourcesDate.sourceDate;
+        var needsBuild = targetDate < sourcesDate.sourceDate;
+        if (needsBuild)
+        {
+            Info($"Target: {target}");
+            Info($"Target Date: {targetDate}");
+            Info($"Source: {sourcesDate.source}");
+            Info($"Source Date: {sourcesDate.sourceDate}");
+        }
+
+        return needsBuild;
     }
 
     Target Clean => _ => _
@@ -112,22 +133,22 @@ class Build : NukeBuild
 
     Target Restore => _ => _
         .OnlyWhenDynamic(() => NeedsBuild(OSAssembly, SourceDirectory.GlobFiles("**/*.cs")))
-        .Executes(() => DotNetRestore(s => s.SetProjectFile(Solution)));
+        .Executes(() => DotNetRestore(s => s.SetProjectFile(WslPath(Solution)).AsWslToolSettings()));
 
     Target CompileOS => _ => _
         .DependsOn(Restore)
         .OnlyWhenDynamic(() => NeedsBuild(OSAssembly, SourceDirectory.GlobFiles("**/*.cs")))
-        .Executes(() =>
-            DotNetBuild(s => s
-                .SetProjectFile(Solution)
-                .SetConfiguration(Configuration)
-                .EnableNoRestore()));
+        .Executes(() => DotNetBuild(x => x
+            .SetProjectFile(WslPath(Solution))
+            .SetConfiguration(Configuration)
+            .EnableNoRestore()
+            .AsWslToolSettings()));
 
     Target CompileILC => _ => _
         .OnlyWhenDynamic(() => NeedsBuild(IlcCommand, CoreRTDirectory.GlobFiles("**/*.cs")))
         .Executes(() =>
         {
-            StartProcess("wsl", "cd ./vendor/corert; ./build.sh x64 Release").AssertZeroExitCode();
+            StartProcess(CoreRTBuildCommand, "x64 Release", CoreRTDirectory).AssertZeroExitCode();
             Touch(IlcCommand);
         });
 
@@ -135,8 +156,8 @@ class Build : NukeBuild
         .DependsOn(CompileILC)
         .DependsOn(CompileOS)
         .OnlyWhenDynamic(() => NeedsBuild(OSObjectFile, OSAssembly, CorelibAssembly, RuntimeAssembly))
-        .Executes(() => StartProcess("wsl",
-                $"{WslPath(IlcCommand)} -g --systemmodule Zenos.CoreLib --out {WslPath(OSObjectFile)} {WslPath(OSAssembly)} {WslPath(CorelibAssembly)} {WslPath(RuntimeAssembly)}")
+        .Executes(() => StartProcess(IlcCommand,
+                $"-g --systemmodule Zenos.CoreLib --out {WslPath(OSObjectFile)} {WslPath(OSAssembly)} {WslPath(CorelibAssembly)} {WslPath(RuntimeAssembly)}")
             .AssertZeroExitCode());
 
     bool ShouldCompileAssembly() =>
@@ -158,7 +179,7 @@ class Build : NukeBuild
                 var unixFile = WslPath(file);
                 var objDir = WslPath(ObjectsDirectory);
                 var name = Path.GetFileNameWithoutExtension(file);
-                StartProcess("wsl", $"nasm {NasmOptions} -o {objDir}/{name}.o {unixFile}").AssertZeroExitCode();
+                StartProcess("nasm", $"{NasmOptions} -o {objDir}/{name}.o {unixFile}").AssertZeroExitCode();
             });
         });
 
@@ -169,8 +190,8 @@ class Build : NukeBuild
         .OnlyWhenDynamic(() => NeedsBuild(KernelFile, AssemblyFiles, LinkerScript, OSObjectFile))
         .Executes(() =>
         {
-            StartProcess("wsl",
-                    $"ld --nmagic --output={WslPath(KernelFile)} --script={WslPath(LinkerScript)} obj/multiboot_header.o obj/boot.o {WslPath(OSObjectFile)} obj/modules.o obj/dotnet.o obj/load_end_addr.o")
+            StartProcess("ld",
+                    $"--nmagic --output={WslPath(KernelFile)} --script={WslPath(LinkerScript)} obj/multiboot_header.o obj/boot.o {WslPath(OSObjectFile)} obj/modules.o obj/dotnet.o obj/load_end_addr.o")
                 .AssertZeroExitCode();
         });
 
@@ -190,7 +211,7 @@ class Build : NukeBuild
             CopyFile(KernelFile, IsoFilesIntermediatePath / "boot" / "kernel.bin");
             CopyFile(GrubScript, IsoFilesIntermediatePath / "boot" / "grub" / "grub.cfg");
 
-            StartProcess("wsl", $"grub-mkrescue -o {WslPath(IsoFile)} {WslPath(IsoFilesIntermediatePath)}").AssertZeroExitCode();
+            StartProcess("grub-mkrescue", $"-o {WslPath(IsoFile)} {WslPath(IsoFilesIntermediatePath)}").AssertZeroExitCode();
         });
 
     Target Run => _ => _
@@ -202,13 +223,56 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var qemu = StartProcess(QemuCommand, $"{QemuOptions}  -no-shutdown -d cpu_reset -S -s");
-            //StartProcess("wsl", $"gdb --se={WslPath(KernelFile)} -x {WslPath(StartGdbScript)}", logOutput: true)
-            //    .WaitForExit();
-            return qemu.WaitForExit();
+
+            var proc = Process.Start(new ProcessStartInfo
+            {
+                FileName = "gdb",
+                Arguments = $"--se={WslPath(KernelFile)} -x {WslPath(StartGdbScript)}",
+                WorkingDirectory = EnvironmentInfo.WorkingDirectory,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                RedirectStandardInput = true,
+                UseShellExecute = false
+            });
+
+
+            void OutputDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                Console.WriteLine(e.Data);
+            }
+
+
+            void ErrorDataReceived(object sender, DataReceivedEventArgs e)
+            {
+                Console.Error.WriteLine(e.Data);
+            }
+
+
+            proc.OutputDataReceived += OutputDataReceived;
+            proc.ErrorDataReceived += ErrorDataReceived;
+
+            // var running = true;
+            var copyThread = new Thread(() =>
+            {
+                while (true)
+                {
+                    var c = Console.Read();
+                    if (c == -1)
+                        break;
+
+                    proc.StandardInput.Write((char)c);
+                }
+            });
+            copyThread.Start();
+
+            proc.BeginOutputReadLine();
+            proc.BeginErrorReadLine();
+
+            proc.WaitForExit();
+            proc.OutputDataReceived -= OutputDataReceived;
+            proc.ErrorDataReceived += ErrorDataReceived;
+
+            qemu.Kill();
+            qemu.WaitForExit();
         });
-
-    Target GDB => _ => _
-        .DependsOn(CompileIso)
-        .Executes(() => StartProcess("wsl", $"gdb --se={WslPath(KernelFile)} -x {WslPath(StartGdbScript)}").WaitForExit());
-
 }
