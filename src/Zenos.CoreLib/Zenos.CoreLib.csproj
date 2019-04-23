@@ -77,13 +77,32 @@
   <ItemGroup>
     <Compile Include="..\..\vendor\corert\bin\obj\$(BinDirOSGroup).$(BinDirPlatform).$(BinDirConfiguration)\System.Private.CoreLib\SR.cs" Link="Resources\SR.cs" />
     <Compile Include="..\..\vendor\corert\src\Common\src\System\SR.cs" Link="System\SR.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Interop\Windows\Advapi32\Interop.ActivityControl.cs" Link="Interop.ActivityControl.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Interop\Windows\Advapi32\Interop.EtwEnableCallback.cs" Link="Interop.EtwEnableCallback.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Buffer.Unix.cs" Link="System\Buffer.Unix.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\ComponentModel\EditorBrowsableState.cs" Link="System\ComponentModel\EditorBrowsableState.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Diagnostics\Tracing\CounterGroup.cs" Link="System\Diagnostics\Tracing\CounterGroup.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Diagnostics\Tracing\CounterPayload.cs" Link="System\Diagnostics\Tracing\CounterPayload.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Diagnostics\Tracing\DiagnosticCounter.cs" Link="System\Diagnostics\DiagnosticCounter.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Environment.NoRegistry.cs" Link="System\Environment.NoRegistry.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\GCMemoryInfo.cs" Link="System\GCMemoryInfo.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Globalization\CompareOptions.cs" Link="System\Globalization\CompareOptions.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Globalization\CultureInfo.Unix.cs" Link="System\Globalization\CultureInfo.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Globalization\HijriCalendar.Unix.cs" Link="System\Globalization\HijriCalendar.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Globalization\LocaleData.Unix.cs" Link="System\Globalization\LocaleData.Unix.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\MemoryExtensions.Trim.cs" Link="System\MemoryExtensions.Trim.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\PasteArguments.Unix.cs" Link="System\PasteArguments.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Runtime\MemoryFailPoint.Unix.cs" Link="System\Runtime\MemoryFailPoint.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Security\SecureString.Unix.cs" Link="System\Security\SecureString.Unix.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\ASCIIUtility.cs" Link="System\Text\ASCIIUtility.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\ASCIIUtility.Helpers.cs" Link="System\Text\ASCIIUtility.Helpers.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Encoding.Internal.cs" Link="System\Text\Encoding.Internal.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf16Utility.Validation.cs" Link="System\Text\Unicode\Utf16Utility.Validation.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf8.cs" Link="System\Text\Unicode\Utf8.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf8Utility.cs" Link="System\Text\Unicode\Utf8Utility.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf8Utility.Helpers.cs" Link="System\Text\Unicode\Utf8Utility.Helpers.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf8Utility.Transcoding.cs" Link="System\Text\Unicode\Utf8Utility.Transcoding.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf8Utility.Validation.cs" Link="System\Text\Unicode\Utf8Utility.Validation.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Threading\Thread.Unix.cs" Link="System\Threading\Thread.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Threading\TimerQueue.Unix.cs" Link="System\Threading\TimerQueue.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\..\..\Common\src\Internal\Runtime\RuntimeConstants.cs">
@@ -170,7 +189,12 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\Internal\Reflection\Extensions\NonPortable\CustomAttributeSearcher.cs" Link="Internal\Reflection\Extensions\NonPortable\CustomAttributeSearcher.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\Internal\Reflection\MetadataTransformedAttribute.cs" Link="Internal\Reflection\MetadataTransformedAttribute.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\Internal\Reflection\ExplicitScopeAttribute.cs" Link="Internal\Reflection\ExplicitScopeAttribute.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Buffer.CoreRT.cs" Link="System\Buffer.CoreRT.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Enum.CoreRT.cs" Link="System\Enum.CoreRT.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Exception.CoreRT.cs" Link="System\Exception.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\HighPerformanceCounter.Unix.cs" Link="System\HighPerformanceCounter.Unix.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\AssemblyName.CoreRT.cs" Link="System\AssemblyName.CoreRT.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\CompilerServices\RuntimeHelpers.CoreRT.cs" Link="System\Runtime\CompilerServices\RuntimeHelpers.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Threading\EventWaitHandle.Unix.cs" Link="System\Threading\EventWaitHandle.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Threading\LowLevelLifoSemaphore.Unix.cs" Link="System\Threading\LowLevelLifoSemaphore.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Threading\Mutex.Unix.cs" Link="System\Threading\Mutex.Unix.cs" />
@@ -194,7 +218,7 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\AssemblyNameParser.cs" Link="System\Reflection\AssemblyNameParser.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\RuntimeAssemblyName.cs" Link="System\Reflection\RuntimeAssemblyName.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\Assembly.CoreRT.cs" Link="System\Reflection\Assembly.CoreRT.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\AssemblyName.cs" Link="System\Reflection\AssemblyName.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Reflection\AssemblyName.cs" Link="System\Reflection\AssemblyName.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\BinderBundle.cs" Link="System\Reflection\BinderBundle.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\CustomAttributeData.cs" Link="System\Reflection\CustomAttributeData.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Reflection\CustomAttributeExtensions.cs" Link="System\Reflection\CustomAttributeExtensions.cs" />
@@ -226,7 +250,7 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Activator.CoreRT.cs" Link="System\Activator.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\AppContext.CoreRT.cs" Link="System\AppContext.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\AppContextConfigHelper.cs" Link="System\AppContextConfigHelper.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Buffer.cs" Link="System\Buffer.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Buffer.cs" Link="System\Buffer.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Collections\Generic\ArraySortHelper.CoreRT.cs" Link="System\Collections\Generic\ArraySortHelper.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Collections\Generic\Comparer.CoreRT.cs" Link="System\Collections\Generic\Comparer.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Collections\Generic\EqualityComparer.CoreRT.cs" Link="System\Collections\Generic\EqualityComparer.CoreRT.cs" />
@@ -249,9 +273,7 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Diagnostics\StackFrameExtensions.cs" Link="System\Diagnostics\StackFrameExtensions.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Diagnostics\StackTrace.CoreRT.cs" Link="System\Diagnostics\StackTrace.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Diagnostics\Tracing\EventCounter.ProjectN.cs" Condition="'$(IsProjectNLibrary)' == 'true'" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Diagnostics\Tracing\EventSource_CoreRT.cs" Link="System\Diagnostics\Tracing\EventSource_CoreRT.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Diagnostics\Tracing\UnsafeNativeMethods.cs" Link="System\Diagnostics\Tracing\UnsafeNativeMethods.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Enum.cs" Link="System\Enum.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Enum.cs" Link="System\Enum.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Environment.CoreRT.cs" Link="System\Environment.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Environment.CoreRT.NonProjectN.cs" Link="System\Environment.CoreRT.NonProjectN.cs" Condition="'$(IsProjectNLibrary)' != 'true'" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\GC.cs" Link="System\GC.cs" />
@@ -296,9 +318,10 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Array.CoreRT.cs" Link="System\Array.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\MDArray.cs" Condition="'$(IsProjectNLibrary)' == 'true'" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Delegate.cs" Link="System\Delegate.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Delegate.cs" Link="System\Delegate.OtherStuff.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Delegate.DefaultParameters.cs" Link="System\Delegate.DefaultParameters.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\RuntimeTypeHandle.cs" Link="System\RuntimeTypeHandle.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Exception.cs" Link="System\Exception.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Exception.cs" Link="System\Exception.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\RuntimeExceptionHelpers.cs" Link="System\RuntimeExceptionHelpers.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\EETypePtr.cs" Link="System\EETypePtr.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Attribute.CoreRT.cs" Link="System\Attribute.CoreRT.cs" />
@@ -335,14 +358,14 @@
     <Compile Condition="'$(TargetsUnix)'=='true'" Include="System\Type.Unix.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\TypedReference.cs" Link="System\TypedReference.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\TypeUnificationKey.cs" Link="System\TypeUnificationKey.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\TypeLoadException.cs" Link="System\TypeLoadException.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\TypeLoadException.cs" Link="System\TypeLoadException.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\TypeLoadException.CoreRT.cs" Link="System\TypeLoadException.CoreRT.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\ValueType.cs" Link="System\ValueType.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\RuntimeExportAttribute.cs" Link="System\Runtime\RuntimeExportAttribute.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\RuntimeImportAttribute.cs" Link="System\Runtime\RuntimeImportAttribute.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\CompilerServices\ClassConstructorRunner.cs" Link="System\Runtime\CompilerServices\ClassConstructorRunner.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\CompilerServices\ClassConstructorRunner.NonPortable.cs" Link="System\Runtime\CompilerServices\ClassConstructorRunner.NonPortable.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\Runtime\CompilerServices\RuntimeHelpers.cs" Link="System\Runtime\CompilerServices\RuntimeHelpers.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Runtime\CompilerServices\RuntimeHelpers.cs" Link="System\Runtime\CompilerServices\RuntimeHelpers.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\WeakReference.cs" Link="System\WeakReference.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\System\WeakReferenceOfT.cs" Link="System\WeakReferenceOfT.cs" />
   </ItemGroup>
@@ -496,7 +519,7 @@
   <ItemGroup>
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Internal\IO\File.cs" Link="Internal\IO\File.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Internal\Padding.cs" Link="Internal\Padding.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Internal\Runtime\Augments\RuntimeThread.cs" Link="Internal\Runtime\Augments\RuntimeThread.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\src\Internal\Runtime\Augments\RuntimeThread.cs" Link="Internal\Runtime\Augments\RuntimeThread.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Internal\Runtime\CompilerServices\Unsafe.cs" Link="Internal\Runtime\CompilerServices\Unsafe.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Internal\Threading\Tasks\AsyncCausalitySupport.cs" Link="Internal\Threading\Tasks\AsyncCausalitySupport.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\Microsoft\Win32\SafeHandles\CriticalHandleMinusOneIsInvalid.cs" Link="Microsoft\Win32\SafeHandles\CriticalHandleMinusOneIsInvalid.cs" />
@@ -1264,7 +1287,7 @@
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UnicodeDebug.cs" Link="System\Text\UnicodeDebug.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UnicodeEncoding.cs" Link="System\Text\UnicodeEncoding.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UnicodeUtility.cs" Link="System\Text\UnicodeUtility.cs" />
-    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Utf16Utility.cs" Link="System\Text\Utf16Utility.cs" />
+    <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\Unicode\Utf16Utility.cs" Link="System\Text\Unicode\Utf16Utility.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UTF32Encoding.cs" Link="System\Text\UTF32Encoding.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UTF7Encoding.cs" Link="System\Text\UTF7Encoding.cs" />
     <Compile Include="..\..\vendor\corert\src\System.Private.CoreLib\shared\System\Text\UTF8Encoding.cs" Link="System\Text\UTF8Encoding.cs" />
@@ -1751,10 +1774,15 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="System\ComponentModel\" />
+    <Folder Include="System\Diagnostics\Tracing\" />
+    <Folder Include="System\Reflection\" />
+    <Folder Include="System\Runtime\CompilerServices\" />
     <Folder Include="System\Security\" />
+    <Folder Include="System\Text\Unicode\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Net.Compilers" Version="3.0.0">
+    <PackageReference Include="Microsoft.Net.Compilers.Toolset" Version="3.1.0-beta3-19213-02">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

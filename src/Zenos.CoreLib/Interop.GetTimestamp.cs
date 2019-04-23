@@ -6,9 +6,9 @@ internal static partial class Interop
     internal static partial class Sys
     {
         [RuntimeImport("SystemNative_GetTimestampResolution")]
-        internal static extern bool GetTimestampResolution(out long resolution);
+        internal static extern ulong GetTimestampResolution();
 
         [RuntimeImport("SystemNative_GetTimestamp")]
-        internal static extern bool GetTimestamp(out long timestamp);
+        internal static extern ulong GetTimestamp();
     }
 }
