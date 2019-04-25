@@ -16,7 +16,7 @@ using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
-using static Nuke.Common.Tooling.ProcessTasks;
+using static ProcessTasks;
 using static Nuke.Common.Logger;
 
 static class ToolSettingsExtensions
@@ -34,6 +34,7 @@ static class ToolSettingsExtensions
     }
 }
 
+
 [CheckBuildProjectConfigurations]
 [UnsetVisualStudioEnvironmentVariables]
 class Build : NukeBuild
@@ -44,7 +45,21 @@ class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main() => Execute<Build>(x => x.CompileIso);
+    public static int Main()
+    {
+        if (!EnvironmentInfo.IsLinux)
+        {
+            //var args = Environment.GetCommandLineArgs();
+            //args[0] = ToUnixPath(args[0]);
+
+            //var process = StartProcess("wsl", "nuke " + string.Join(" ", args.Skip(1)), logOutput: true);
+            //process.WaitForExit();
+            Console.WriteLine("Zenos can currently only be build under WSL");
+            return -1;
+        }
+
+        return Execute<Build>(x => x.CompileIso);
+    }
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
@@ -76,19 +91,27 @@ class Build : NukeBuild
 
     // Commands
     AbsolutePath QemuCommand => RootDirectory / "tools" / "qemu" / "qemu-system-x86_64.exe";
-    string QemuOptions => $"-cdrom {IsoFile} -no-reboot -serial file:os_serial.txt";
+    string QemuOptions => $"-cdrom {ToWindowsPath(IsoFile)} -no-reboot -serial file:os_serial.txt";
     AbsolutePath IlcCommand => RootDirectory / "vendor" / "corert" / "bin" / "Linux.x64.Release" / "tools" / "ilc";
     string NasmOptions = "-f elf64";
 
     AbsolutePath CoreRTBuildCommand => CoreRTDirectory / "build.sh";
 
+    static string ToUnixPath(string path) =>
+        StartProcess("wsl", $"wslpath -u \"{path}\"", logOutput: true)
+            .AssertZeroExitCode()
+            .Output
+            .Where(x => x.Type == OutputType.Std)
+            .Select(x => x.Text)
+            .FirstOrDefault();
 
-    string WslPath(string path) => path;
-    //StartProcess("wsl", $"wslpath -u \"{path}\"", logOutput: true)
-    //    .AssertZeroExitCode()
-    //    .Output
-    //    .Select(x => x.Text)
-    //    .FirstOrDefault();
+    static string ToWindowsPath(string path) =>
+        StartProcess("wslpath", $"-w \"{path}\"", logOutput: true)
+            .AssertZeroExitCode()
+            .Output
+            .Where(x => x.Type == OutputType.Std)
+            .Select(x => x.Text)
+            .FirstOrDefault();
 
     bool NeedsBuild(AbsolutePath target, IEnumerable<AbsolutePath> sources) =>
         NeedsBuild(target, sources.ToArray());
@@ -133,13 +156,13 @@ class Build : NukeBuild
 
     Target Restore => _ => _
         .OnlyWhenDynamic(() => NeedsBuild(OSAssembly, SourceDirectory.GlobFiles("**/*.cs")))
-        .Executes(() => DotNetRestore(s => s.SetProjectFile(WslPath(Solution)).AsWslToolSettings()));
+        .Executes(() => DotNetRestore(s => s.SetProjectFile(Solution).AsWslToolSettings()));
 
     Target CompileOS => _ => _
         .DependsOn(Restore)
-        .OnlyWhenDynamic(() => NeedsBuild(OSAssembly, SourceDirectory.GlobFiles("**/*.cs")))
+        .OnlyWhenDynamic(() => NeedsBuild(OSAssembly, SourceDirectory.GlobFiles("{Zenos.CoreLib,Zenos.Kernel,Zenos.Runtime,Kernel.Core}/**/*.cs")))
         .Executes(() => DotNetBuild(x => x
-            .SetProjectFile(WslPath(Solution))
+            .SetProjectFile(Solution)
             .SetConfiguration(Configuration)
             .EnableNoRestore()
             .AsWslToolSettings()));
@@ -157,7 +180,7 @@ class Build : NukeBuild
         .DependsOn(CompileOS)
         .OnlyWhenDynamic(() => NeedsBuild(OSObjectFile, OSAssembly, CorelibAssembly, RuntimeAssembly))
         .Executes(() => StartProcess(IlcCommand,
-                $"-g --systemmodule Zenos.CoreLib --out {WslPath(OSObjectFile)} {WslPath(OSAssembly)} {WslPath(CorelibAssembly)} {WslPath(RuntimeAssembly)}")
+                $"-g --systemmodule Zenos.CoreLib --out {OSObjectFile} {OSAssembly} {CorelibAssembly} {RuntimeAssembly}")
             .AssertZeroExitCode());
 
     bool ShouldCompileAssembly() =>
@@ -176,10 +199,8 @@ class Build : NukeBuild
             var files = AssemblyFiles.GlobFiles("*.asm");
             files.ForEach(file =>
             {
-                var unixFile = WslPath(file);
-                var objDir = WslPath(ObjectsDirectory);
                 var name = Path.GetFileNameWithoutExtension(file);
-                StartProcess("nasm", $"{NasmOptions} -o {objDir}/{name}.o {unixFile}").AssertZeroExitCode();
+                StartProcess("nasm", $"{NasmOptions} -o {ObjectsDirectory}/{name}.o {file}").AssertZeroExitCode();
             });
         });
 
@@ -191,7 +212,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             StartProcess("ld",
-                    $"--nmagic --output={WslPath(KernelFile)} --script={WslPath(LinkerScript)} obj/multiboot_header.o obj/boot.o {WslPath(OSObjectFile)} obj/modules.o obj/dotnet.o obj/load_end_addr.o")
+                    $"--nmagic --output={KernelFile} --script={LinkerScript} obj/multiboot_header.o obj/boot.o {OSObjectFile} obj/modules.o obj/dotnet.o obj/load_end_addr.o")
                 .AssertZeroExitCode();
         });
 
@@ -211,7 +232,7 @@ class Build : NukeBuild
             CopyFile(KernelFile, IsoFilesIntermediatePath / "boot" / "kernel.bin");
             CopyFile(GrubScript, IsoFilesIntermediatePath / "boot" / "grub" / "grub.cfg");
 
-            StartProcess("grub-mkrescue", $"-o {WslPath(IsoFile)} {WslPath(IsoFilesIntermediatePath)}").AssertZeroExitCode();
+            StartProcess("grub-mkrescue", $"-o {IsoFile} {IsoFilesIntermediatePath}").AssertZeroExitCode();
         });
 
     Target Run => _ => _
@@ -227,7 +248,7 @@ class Build : NukeBuild
             var proc = Process.Start(new ProcessStartInfo
             {
                 FileName = "gdb",
-                Arguments = $"--se={WslPath(KernelFile)} -x {WslPath(StartGdbScript)}",
+                Arguments = $"--se={KernelFile} -x {StartGdbScript}",
                 WorkingDirectory = EnvironmentInfo.WorkingDirectory,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
