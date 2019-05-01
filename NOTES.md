@@ -16,18 +16,6 @@ GDB Debugging:
 
 run `make debug` and `make gdb`
 
-set breakpoint:
-	b start_dotnet:
-	b OS_OS_Program__EntryPoint
-
-show registers
-	info reg
-
-disassemble
-	disas  0x000000000101b07,+10
-
-
-
 Interrupts:
 	install interrupt table
 	https://github.com/redox-os/kernel/blob/0c8ba636f4263665dae1b0fdd0a040e4e0c724f5/arch/x86_64/src/idt.rs

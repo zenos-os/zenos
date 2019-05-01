@@ -4,12 +4,12 @@ using Internal.Runtime;
 namespace Zenos.Runtime
 {
     [StructLayout(LayoutKind.Explicit)]
-    class RuntimeObject
+    struct RuntimeObject
     {
         [FieldOffset(AsmOffsets.OFFSETOF__Object__m_pEEType)]
-        private EEType _object;
+        private unsafe EEType* _object;
 
-        internal void SetEEType(in EEType obj)
+        internal unsafe void SetEEType(EEType* obj)
         {
             _object = obj;
         }

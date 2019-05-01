@@ -245,55 +245,55 @@ class Build : NukeBuild
         {
             var qemu = StartProcess(QemuCommand, $"{QemuOptions}  -no-shutdown -d cpu_reset -S -s");
 
-            var proc = Process.Start(new ProcessStartInfo
-            {
-                FileName = "gdb",
-                Arguments = $"--se={KernelFile} -x {StartGdbScript}",
-                WorkingDirectory = EnvironmentInfo.WorkingDirectory,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                RedirectStandardInput = true,
-                UseShellExecute = false
-            });
+            //var proc = Process.Start(new ProcessStartInfo
+            //{
+            //    FileName = "gdb",
+            //    Arguments = $"--se={KernelFile} -x {StartGdbScript}",
+            //    WorkingDirectory = EnvironmentInfo.WorkingDirectory,
+            //    RedirectStandardOutput = true,
+            //    RedirectStandardError = true,
+            //    RedirectStandardInput = true,
+            //    UseShellExecute = false
+            //});
 
 
-            void OutputDataReceived(object sender, DataReceivedEventArgs e)
-            {
-                Console.WriteLine(e.Data);
-            }
+            //void OutputDataReceived(object sender, DataReceivedEventArgs e)
+            //{
+            //    Console.WriteLine(e.Data);
+            //}
 
 
-            void ErrorDataReceived(object sender, DataReceivedEventArgs e)
-            {
-                Console.Error.WriteLine(e.Data);
-            }
+            //void ErrorDataReceived(object sender, DataReceivedEventArgs e)
+            //{
+            //    Console.Error.WriteLine(e.Data);
+            //}
 
 
-            proc.OutputDataReceived += OutputDataReceived;
-            proc.ErrorDataReceived += ErrorDataReceived;
+            //proc.OutputDataReceived += OutputDataReceived;
+            //proc.ErrorDataReceived += ErrorDataReceived;
 
-            // var running = true;
-            var copyThread = new Thread(() =>
-            {
-                while (true)
-                {
-                    var c = Console.Read();
-                    if (c == -1)
-                        break;
+            //// var running = true;
+            //var copyThread = new Thread(() =>
+            //{
+            //    while (true)
+            //    {
+            //        var c = Console.Read();
+            //        if (c == -1)
+            //            break;
 
-                    proc.StandardInput.Write((char)c);
-                }
-            });
-            copyThread.Start();
+            //        proc.StandardInput.Write((char)c);
+            //    }
+            //});
+            //copyThread.Start();
 
-            proc.BeginOutputReadLine();
-            proc.BeginErrorReadLine();
+            //proc.BeginOutputReadLine();
+            //proc.BeginErrorReadLine();
 
-            proc.WaitForExit();
-            proc.OutputDataReceived -= OutputDataReceived;
-            proc.ErrorDataReceived += ErrorDataReceived;
+            //proc.WaitForExit();
+            //proc.OutputDataReceived -= OutputDataReceived;
+            //proc.ErrorDataReceived += ErrorDataReceived;
 
-            qemu.Kill();
+            //qemu.Kill();
             qemu.WaitForExit();
         });
 }

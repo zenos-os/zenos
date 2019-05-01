@@ -1,24 +1,19 @@
 using System;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using Internal.Runtime.CompilerServices;
 
 namespace Zenos.Runtime
 {
     public unsafe class RuntimeInstance
     {
-        static RuntimeInstance _instance;
-
-        private OsModuleEntry _osModuleList;
-        private TypeManagerEntry _typeManagerList;
+        private static /* OsModuleEntry*/ void* _osModuleList;
+        private static /* TypeManagerEntry */ void* _typeManagerList;
 
         public static bool Initialize()
         {
-            var pRuntimeInstance = Memory.AllocObject<RuntimeInstance>();
-            if (pRuntimeInstance == null)
-                return false;
-
-            pRuntimeInstance._osModuleList = null;
-            pRuntimeInstance._typeManagerList = null;
+            _osModuleList = null;
+            _typeManagerList = null;
             //
             //            CreateHolder<ThreadStore> pThreadStore = ThreadStore::Create(pRuntimeInstance);
             //            if (NULL == pThreadStore)
@@ -31,7 +26,6 @@ namespace Zenos.Runtime
             //            pRuntimeInstance->m_hPalInstance = hPalInstance;
             //
             //            ASSERT_MSG(g_pTheRuntimeInstance == NULL, "multi-instances are not supported");
-            _instance = pRuntimeInstance;
 
             return true;
         }
@@ -39,110 +33,105 @@ namespace Zenos.Runtime
         [RuntimeExport("RhpCreateTypeManager")]
         public static TypeManagerHandle CreateTypeManager(IntPtr osModule, IntPtr moduleHeader, IntPtr* classLibFunctions, uint numClassLibFunctions)
         {
-            var typeManager = TypeManager.Create(osModule, moduleHeader, classLibFunctions, numClassLibFunctions);
+            ref var typeManager = ref TypeManager.Create(osModule, moduleHeader, classLibFunctions, numClassLibFunctions);
 
-            GetRuntimeInstance().RegisterTypeManager(typeManager);
+            RuntimeInstance.RegisterTypeManager(ref typeManager);
 
-            return new TypeManagerHandle(typeManager);
+            return new TypeManagerHandle(ref typeManager);
         }
 
-        public bool RegisterTypeManager(in TypeManager typeManager)
+        public static bool RegisterTypeManager(ref TypeManager typeManager)
         {
-            var entry = TypeManagerEntry.Create(typeManager);
-            if (entry == null)
-            {
-                return false;
-            }
+            ref var entry = ref TypeManagerEntry.Create(ref typeManager);
 
-            TypeManagerEntry.PushHead(ref _typeManagerList, entry);
+            if (_typeManagerList == null)
+            {
+                _typeManagerList = Unsafe.AsPointer(ref entry);
+            }
+            else
+            {
+                TypeManagerEntry.PushHead(ref Unsafe.AsRef<TypeManagerEntry>(_typeManagerList), ref entry);
+            }
 
             return true;
         }
 
-        internal OsModuleEntry GetOsModuleList()
+        internal ref OsModuleEntry GetOsModuleList()
         {
-            return _osModuleList;
+            return ref Unsafe.AsRef<OsModuleEntry>(_osModuleList);
         }
 
-        class TypeManagerEntry
+        struct TypeManagerEntry
         {
-            public TypeManagerEntry _next;
-            public TypeManager _typeManager;
+            /*TypeManagerEntry*/
+            void* _next;
+            /*TypeManager*/
+            void* _typeManager;
 
-            public static TypeManagerEntry Create(in TypeManager typeManager)
+            public ref TypeManagerEntry Entry => ref Unsafe.AsRef<TypeManagerEntry>(_next);
+            public ref TypeManager TypeManager => ref Unsafe.AsRef<TypeManager>(_typeManager);
+
+
+            public static ref TypeManagerEntry Create(ref TypeManager typeManager)
             {
-                var pEntry = Memory.AllocObject<TypeManagerEntry>();
-                if (pEntry == null)
-                    return null;
+                ref var pEntry = ref Memory.Alloc<TypeManagerEntry>();
+                pEntry._typeManager = Unsafe.AsPointer(ref typeManager);
+                pEntry._next = null;
 
-                pEntry._typeManager = typeManager;
-
-                return pEntry;
+                return ref pEntry;
             }
 
-            public static void PushHead(ref TypeManagerEntry current, TypeManagerEntry entry)
+            public static void PushHead(ref TypeManagerEntry current, ref TypeManagerEntry entry)
             {
-                if (current == null)
-                {
-                    current = entry;
-                    return;
-                }
-
-                entry._next = current;
+                entry._next = Unsafe.AsPointer(ref current);
                 current = entry;
             }
         }
 
-        internal class OsModuleEntry
+        internal struct OsModuleEntry
         {
-            public OsModuleEntry _next;
+            public /*OsModuleEntry*/void* _next;
             public IntPtr _osModule;
 
-            public static OsModuleEntry Create(IntPtr osModule)
+            public static ref OsModuleEntry Create(IntPtr osModule)
             {
-                var pEntry = Memory.AllocObject<OsModuleEntry>();
-                if (pEntry == null)
-                    return null;
+                ref var pEntry = ref Memory.Alloc<OsModuleEntry>();
 
                 pEntry._osModule = osModule;
+                pEntry._next = null;
 
-                return pEntry;
+                return ref pEntry;
             }
 
-            public static void PushHead(ref OsModuleEntry current, OsModuleEntry entry)
+            public static void PushHead(ref OsModuleEntry current, ref OsModuleEntry entry)
             {
-                if (current == null)
-                {
-                    current = entry;
-                    return;
-                }
-
-                entry._next = current;
+                entry._next = Unsafe.AsPointer(ref current);
                 current = entry;
             }
-        }
-
-        public static RuntimeInstance GetRuntimeInstance()
-        {
-            return _instance;
         }
 
         [RuntimeExport("RhpRegisterOsModule")]
-        public static unsafe IntPtr RhpRegisterOsModule(IntPtr osModule)
+        public static IntPtr RhpRegisterOsModule(IntPtr osModule)
         {
             // TODO: register os module
-
-            var pEntry = Memory.AllocObject<OsModuleEntry>();
-            if (pEntry == null)
+            if (osModule == IntPtr.Zero)
                 return IntPtr.Zero;
 
+            ref var pEntry = ref Memory.Alloc<OsModuleEntry>();
             pEntry._osModule = osModule;
+            pEntry._next = null;
 
             {
-                RuntimeInstance pRuntimeInstance = GetRuntimeInstance();
-                //                ReaderWriterLock::WriteHolder write(&pRuntimeInstance->GetTypeManagerLock());
+                //  ReaderWriterLock::WriteHolder write(&pRuntimeInstance->GetTypeManagerLock());
 
-                OsModuleEntry.PushHead(ref pRuntimeInstance._osModuleList, pEntry);
+                if (_osModuleList == null)
+                {
+                    _osModuleList = Unsafe.AsPointer(ref pEntry);
+                }
+                else
+                {
+                    OsModuleEntry.PushHead(ref Unsafe.AsRef<OsModuleEntry>(_osModuleList), ref pEntry);
+                }
             }
 
             return osModule; // Return non-null on success

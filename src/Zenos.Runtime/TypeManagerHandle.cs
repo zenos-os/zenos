@@ -13,7 +13,7 @@ namespace Zenos.Runtime
             _handleValue = handleValue;
         }
 
-        internal unsafe TypeManagerHandle(TypeManager typeManager)
+        internal unsafe TypeManagerHandle(ref TypeManager typeManager)
         {
             var addr = Unsafe.AsPointer(ref typeManager);
             var p = (long)(addr) + 1;
@@ -43,14 +43,14 @@ namespace Zenos.Runtime
             }
         }
 
-        internal unsafe TypeManager AsTypeManagerPtr
+        internal unsafe ref TypeManager AsTypeManagerPtr
         {
             get
             {
                 Debug.Assert(IsTypeManager);
                 unsafe
                 {
-                    return Unsafe.AsRef<TypeManager>(((byte*)(void*)_handleValue) - 1);
+                    return ref Unsafe.AsRef<TypeManager>(((byte*)(void*)_handleValue) - 1);
                 }
             }
         }

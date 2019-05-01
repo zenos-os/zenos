@@ -7,5 +7,6 @@ set pagination off
 target remote localhost:1234
 
 b RedHawk.cs:75
-b Zenos_Kernel_Zenos_Kernel_Kernel__Initialize
+b MinimalRuntime.cs:64
+b RhpAssignRef
 c

@@ -23,25 +23,6 @@
 4. Link all object files
 5. Build ISO
 
-
-## Build commands
-
-How to debug the OS with GDB:
-
-### Start the OS via QEMU in debug mode
-
-```bash
-make debug
-```
-
-### Start GDB to connect to QEMU
-
-```bash
-make gdb
-```
-
-
-
 ## Calling convention
 
 RDI, RSI, RDX, RCX, R8, R9

@@ -11,20 +11,23 @@ namespace Zenos.Runtime
         private static uint m_numThreadLocalModuleStatics;
 
         [RuntimeExport("RhGetThreadStaticStorageForModule")]
-        internal static unsafe RuntimeObject RhGetThreadStaticStorageForModule(int moduleIndex)
+        internal static unsafe RuntimeObject* RhGetThreadStaticStorageForModule(int moduleIndex)
         {
             // Return a pointer to the TLS storage if it has already been
             // allocated for the specified module.
             if (moduleIndex < m_numThreadLocalModuleStatics)
             {
-                return m_pThreadLocalModuleStatics[moduleIndex]._handle;
+                fixed (RuntimeObject* p = &m_pThreadLocalModuleStatics[moduleIndex]._handle)
+                {
+                    return p;
+                }
             }
 
             return null;
         }
 
         [RuntimeExport("RhSetThreadStaticStorageForModule")]
-        internal static unsafe bool RhSetThreadStaticStorageForModule(RuntimeObject pStorage, UInt32 moduleIndex)
+        internal static unsafe bool RhSetThreadStaticStorageForModule(ref RuntimeObject pStorage, UInt32 moduleIndex)
         {
             // Grow thread local storage if needed.
             if (m_numThreadLocalModuleStatics <= moduleIndex)
@@ -49,7 +52,7 @@ namespace Zenos.Runtime
                 m_numThreadLocalModuleStatics = newSize;
             }
 
-            var threadStaticsStorageHandle = RhpHandleAlloc(pStorage, 2 /* Normal */);
+            var threadStaticsStorageHandle = RhpHandleAlloc(ref pStorage, 2 /* Normal */);
             if (threadStaticsStorageHandle == null)
             {
                 return false;

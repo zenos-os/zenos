@@ -1,20 +1,17 @@
 # Getting Started
 
-## Installation Requirements
+## Installation Requirements Summary
 
 * Windows Subsystem for Linux (Ubuntu 18.04)
 * CoreRT
 * Zenos Tooling
-
-
-dotnet tool install Nuke.GlobalTool --global
 
 ### Windows Subsystem For Linux
 
 Setup VS for remote debugging:
 https://devblogs.microsoft.com/cppblog/targeting-windows-subsystem-for-linux-from-visual-studio/
 
-### CoreRT
+### CoreRT Dependencies
 
 Under WSL we want to install the following:
 [CoreRT Prerequisites for building](https://github.com/dotnet/corert/blob/master/Documentation/prerequisites-for-building.md)
@@ -25,20 +22,28 @@ echo "deb http://llvm.org/apt/xenial/ llvm-toolchain-xenial-3.9 main" | sudo tee
 wget -O - http://llvm.org/apt/llvm-snapshot.gpg.key | sudo apt-key add -
 sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
 sudo apt-get update
-sudo apt-get install cmake clang-3.9 libicu55 uuid-dev libcurl4-openssl-dev zlib1g-dev libkrb5-dev
+sudo apt-get install cmake clang-3.9 libicu-dev uuid-dev libcurl4-openssl-dev zlib1g-dev libkrb5-dev
 ```
 
-### Building ILC
+#### Building ILC (Manually)
 
 ```bash
 cd vendor/corert
-./build.sh clean
+./build.sh clean x64 Release
 ```
 
-CoreRT binaries will be places in `<repo_root>vendor\corert\bin\Linux.x64.<Config>\tools`
+CoreRT binaries will be places in `<repo_root>vendor\corert\bin\Linux.x64.Release\tools`
 
 
 ### Zenos Tooling
+
+Install Nuke Build tool:
+
+```bash
+dotnet tool install Nuke.GlobalTool --global
+```
+
+Install Debugging and ISO related tooling
 
 ```bash
 sudo apt install \
@@ -59,8 +64,3 @@ chmod: cannot access '/mnt/e/code/OsDev/zenos/vendor/corert/packages/microsoft.d
 ```
 
 run `vi -b BuildToolsVersion.txt` and remove trailing ^M
-
-maybe QEMU
-
-Tools go to:
-    /mnt/e/code/OsDev/zenos/vendor/corert/bin/Linux.x64.Debug/sdk/libRuntime.a

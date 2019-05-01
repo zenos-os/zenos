@@ -6,7 +6,7 @@ using Internal.Runtime;
 namespace Zenos.Runtime
 {
     [StructLayout(LayoutKind.Sequential)]
-    public unsafe class TypeManager
+    public unsafe struct TypeManager
     {
         private IntPtr _osModule;
         private ReadyToRunHeader* _header;
@@ -24,7 +24,7 @@ namespace Zenos.Runtime
             var sectionCount = _header->NumberOfSections;
 
             // TODO this should be true, if not `this` must not be set properly
-            Debug.Assert(sectionCount == 0x21);
+            // Debug.Assert(sectionCount == 0x21);
 
             //// TODO: Binary search
             for (int i = 0; i < sectionCount; i++)
@@ -42,19 +42,17 @@ namespace Zenos.Runtime
             return null;
         }
 
-        public static TypeManager Create(in IntPtr osModule, in IntPtr moduleHeader, IntPtr* classLibFunctions, in uint numClassLibFunctions)
+        public static ref TypeManager Create(in IntPtr osModule, in IntPtr moduleHeader, IntPtr* classLibFunctions, in uint numClassLibFunctions)
         {
             var pReadyToRunHeader = (ReadyToRunHeader*)moduleHeader;
 
             // Sanity check the signature magic
-            if (pReadyToRunHeader->Signature != ReadyToRunHeaderConstants.Signature)
-                return null;
+            Debug.Assert(pReadyToRunHeader->Signature == ReadyToRunHeaderConstants.Signature);
 
             // Only the current major version is supported currently
-            if (pReadyToRunHeader->MajorVersion != ReadyToRunHeaderConstants.CurrentMajorVersion)
-                return null;
+            Debug.Assert(pReadyToRunHeader->MajorVersion == ReadyToRunHeaderConstants.CurrentMajorVersion);
 
-            var tm = Memory.AllocObject<TypeManager>();
+            ref var tm = ref Memory.Alloc<TypeManager>();
             tm._osModule = osModule;
             tm._header = pReadyToRunHeader;
             tm._dispatchMapTable = null;
@@ -69,7 +67,7 @@ namespace Zenos.Runtime
             //            m_pThreadStaticsGCInfo = (StaticGcDesc*)GetModuleSection(ReadyToRunSectionType::ThreadStaticGCDescRegion, &length);
             //            m_pTlsIndex = (UInt32*)GetModuleSection(ReadyToRunSectionType::ThreadStaticIndex, &length);
             //            m_pLoopHijackFlag = (UInt32*)GetModuleSection(ReadyToRunSectionType::LoopHijackFlag, &length);
-            return tm;
+            return ref tm;
         }
     }
 }

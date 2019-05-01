@@ -1,8 +1,7 @@
+using Internal.Runtime;
 using System;
 using System.Diagnostics;
 using System.Runtime;
-using System.Runtime.InteropServices;
-using Internal.Runtime;
 
 namespace Zenos.Runtime
 {
@@ -60,13 +59,13 @@ namespace Zenos.Runtime
 
 
         [RuntimeExport("RhpNewFast")]
-        internal static object RhpNewFast(in EEType pEEType)
+        internal static unsafe ref RuntimeObject RhpNewFast(EEType* pEEType)
         {
-            var size = pEEType.BaseSize;
-            var obj = Memory.AllocObject<RuntimeObject>((int)size);
+            var size = pEEType->BaseSize;
+            ref var obj = ref Memory.Alloc<RuntimeObject>((int)size);
             obj.SetEEType(pEEType);
 
-            return obj;
+            return ref obj;
         }
 
 
@@ -97,28 +96,26 @@ namespace Zenos.Runtime
         //private const int RH_LARGE_OBJECT_SIZE = 85000;
 
         [RuntimeExport("RhpNewFinalizable")]
-        internal static object RhpNewFinalizable(in EEType pEEType)
+        internal static unsafe ref RuntimeObject RhpNewFinalizable(EEType* pEEType)
         {
-            Debug.Assert(!pEEType.RequiresAlign8);
-            Debug.Assert(pEEType.IsFinalizable);
+            Debug.Assert(!pEEType->RequiresAlign8);
+            Debug.Assert(pEEType->IsFinalizable);
 
-            var size = pEEType.BaseSize;
+            var size = pEEType->BaseSize;
             //            var obj = (RuntimeObject*)RhpGcAlloc(pEEType, GC_ALLOC_FINALIZE, size, NULL);
-            var obj = Memory.AllocObject<RuntimeObject>((int)size);
+            ref var obj = ref Memory.Alloc<RuntimeObject>((int)size);
             obj.SetEEType(pEEType);
             //
             //            if (size >= RH_LARGE_OBJECT_SIZE)
             //                RhpPublishObject(pObject, size);
 
-
-
-            return obj;
+            return ref obj;
         }
 
         [RuntimeExport("RhpHandleAlloc")]
-        internal static ObjectHandle RhpHandleAlloc(RuntimeObject obj, int type)
+        internal static ObjectHandle RhpHandleAlloc(ref RuntimeObject obj, int type)
         {
-            var handle = Memory.AllocObject<ObjectHandle>();
+            var handle = new ObjectHandle(); // Memory.AllocObject<ObjectHandle>();
             handle._handle = obj;
             return handle;
         }
